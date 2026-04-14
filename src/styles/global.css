@@ -1,0 +1,54 @@
+body {
+  margin: 0;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #f6f8fb;
+}
+
+.ant-card {
+  border-radius: 8px;
+}
+
+a,
+.ant-typography a {
+  color: #0f766e;
+}
+
+.brand-icon-button {
+  color: #0f766e;
+  border-color: #d4ece8;
+}
+
+.detail-section-nav-wrap {
+  position: sticky;
+  top: 92px;
+  z-index: 6;
+  background: #f6f8fb;
+  padding: 4px 0 12px;
+}
+
+.detail-section-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid #dce9e7;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(15, 118, 110, 0.08);
+}
+
+.detail-section-nav-item {
+  border: 1px solid #dce9e7;
+  background: #f7fbfa;
+  color: #345553;
+  border-radius: 16px;
+  padding: 4px 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.detail-section-nav-item.active {
+  background: #0f766e;
+  border-color: #0f766e;
+  color: #fff;
+}
