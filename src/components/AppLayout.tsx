@@ -53,10 +53,11 @@ export const AppLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Header style={{ position: 'sticky', top: 0, zIndex: 10, background: '#fff', borderBottom: '1px solid #f0f0f0', paddingInline: 24 }}>
+      <Header style={{ height: 80, lineHeight: '80px', position: 'sticky', top: 0, zIndex: 10, background: '#fff', borderBottom: '1px solid #f0f0f0', paddingInline: 24 }}>
         <Space style={{ width: '100%', justifyContent: 'space-between' }}>
           <Space>
-            <Typography.Title level={4} style={{ margin: 0, color: '#0052CC' }}>KPay CRM</Typography.Title>
+            <img src="/logo.svg" alt="KPay logo" style={{ height: 36, width: 'auto' }} />
+            <Typography.Title level={4} style={{ margin: 0, color: '#103E87' }}>KPay CRM</Typography.Title>
           </Space>
           <Space>
             <Select defaultValue="HK" style={{ width: 100 }} options={[{ value: 'HK', label: 'Hong Kong' }, { value: 'SG', label: 'Singapore' }]} />
@@ -70,7 +71,7 @@ export const AppLayout = ({ children }: { children: React.ReactNode }) => {
         </Space>
       </Header>
       <Layout>
-        <Sider width={280} style={{ background: '#fff', borderRight: '1px solid #f0f0f0', position: 'sticky', top: 64, height: 'calc(100vh - 64px)', overflow: 'auto' }}>
+        <Sider width={280} style={{ background: '#fff', borderRight: '1px solid #f0f0f0', position: 'sticky', top: 80, height: 'calc(100vh - 80px)', overflow: 'auto' }}>
           <MenuUnfoldOutlined style={{ margin: 16, color: '#999' }} />
           <Menu mode="inline" items={menuTree} selectedKeys={[selected]} openKeys={openKeys} onOpenChange={(keys) => { setOpenKeys(keys); localStorage.setItem('crm-menu-open', JSON.stringify(keys)); }} onClick={(e) => navigate(e.key)} />
         </Sider>

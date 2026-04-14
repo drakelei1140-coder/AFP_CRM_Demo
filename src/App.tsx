@@ -11,7 +11,19 @@ export default function App() {
     <ConfigProvider
       theme={{
         algorithm: theme.defaultAlgorithm,
-        token: { colorPrimary: '#0052CC', borderRadius: 6 }
+        token: { colorPrimary: '#103E87', colorInfo: '#103E87', borderRadius: 6 },
+        components: {
+          Menu: {
+            itemSelectedBg: '#E8F0FF',
+            itemSelectedColor: '#103E87',
+            subMenuItemSelectedColor: '#103E87'
+          },
+          Button: {
+            colorPrimary: '#103E87',
+            colorPrimaryHover: '#1a4d9e',
+            colorPrimaryActive: '#0e326f'
+          }
+        }
       }}
     >
       <AppLayout>
