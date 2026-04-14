@@ -56,7 +56,7 @@ export const AppLayout = ({ children }: { children: React.ReactNode }) => {
       <Header style={{ height: 80, lineHeight: '80px', position: 'sticky', top: 0, zIndex: 10, background: '#fff', borderBottom: '1px solid #f0f0f0', paddingInline: 24 }}>
         <Space style={{ width: '100%', justifyContent: 'space-between' }}>
           <Space>
-            <img src="/logo.svg" alt="KPay logo" style={{ height: 36, width: 'auto' }} />
+            <img src="/logo.jpg" alt="KPay logo" style={{ height: 36, width: 'auto' }} />
             <Typography.Title level={4} style={{ margin: 0, color: '#103E87' }}>KPay CRM</Typography.Title>
           </Space>
           <Space>
