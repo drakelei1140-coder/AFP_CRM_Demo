@@ -7,21 +7,46 @@ import { EnterpriseListPage } from './pages/EnterpriseListPage';
 import { PlaceholderPage } from './pages/PlaceholderPage';
 
 export default function App() {
+  const brandPrimary = '#0F766E';
+  const brandPrimaryHover = '#13887f';
+  const brandPrimaryActive = '#0d5f59';
+  const brandSoft = '#E6F4F2';
+  const brandAccent = '#F4B400';
+
   return (
     <ConfigProvider
       theme={{
         algorithm: theme.defaultAlgorithm,
-        token: { colorPrimary: '#103E87', colorInfo: '#103E87', borderRadius: 6 },
+        token: {
+          colorPrimary: brandPrimary,
+          colorInfo: brandPrimary,
+          colorLink: brandPrimary,
+          colorLinkHover: brandPrimaryHover,
+          borderRadius: 6
+        },
         components: {
           Menu: {
-            itemSelectedBg: '#E8F0FF',
-            itemSelectedColor: '#103E87',
-            subMenuItemSelectedColor: '#103E87'
+            itemSelectedBg: brandSoft,
+            itemSelectedColor: brandPrimary,
+            subMenuItemSelectedColor: brandPrimary,
+            itemActiveBg: '#F3FBFA'
           },
           Button: {
-            colorPrimary: '#103E87',
-            colorPrimaryHover: '#1a4d9e',
-            colorPrimaryActive: '#0e326f'
+            colorPrimary: brandPrimary,
+            colorPrimaryHover: brandPrimaryHover,
+            colorPrimaryActive: brandPrimaryActive
+          },
+          Tag: {
+            defaultBg: '#F7FAFA'
+          },
+          Segmented: {
+            itemSelectedBg: brandSoft
+          },
+          Select: {
+            optionSelectedBg: brandSoft
+          },
+          Badge: {
+            colorPrimary: brandAccent
           }
         }
       }}

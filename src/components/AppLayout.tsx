@@ -57,13 +57,13 @@ export const AppLayout = ({ children }: { children: React.ReactNode }) => {
         <Space style={{ width: '100%', justifyContent: 'space-between' }}>
           <Space>
             <img src="/logo.jpg" alt="KPay logo" style={{ height: 36, width: 'auto' }} />
-            <Typography.Title level={4} style={{ margin: 0, color: '#103E87' }}>KPay CRM</Typography.Title>
+            <Typography.Title level={4} style={{ margin: 0, color: '#0F766E' }}>KPay CRM</Typography.Title>
           </Space>
           <Space>
             <Select defaultValue="HK" style={{ width: 100 }} options={[{ value: 'HK', label: 'Hong Kong' }, { value: 'SG', label: 'Singapore' }]} />
             <Select defaultValue="zh-CN" style={{ width: 110 }} options={[{ value: 'zh-CN', label: '中文' }, { value: 'en-US', label: 'English' }]} />
-            <Button icon={<NotificationOutlined />} />
-            <Button icon={<SettingOutlined />} />
+            <Button className="brand-icon-button" icon={<NotificationOutlined />} />
+            <Button className="brand-icon-button" icon={<SettingOutlined />} />
             <Dropdown menu={{ items: [{ key: '1', label: '个人中心' }, { key: '2', label: '退出登录' }] }}>
               <Space><Avatar>U</Avatar><Typography.Text>Ops User</Typography.Text></Space>
             </Dropdown>

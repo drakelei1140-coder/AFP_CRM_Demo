@@ -48,19 +48,25 @@ export const EnterpriseDetailPage = () => {
     <Space direction="vertical" style={{ width: '100%' }} size={16}>
       <Card id="overview">
         <Space direction="vertical" style={{ width: '100%' }}>
-          <div style={{ position: 'sticky', top: 92, zIndex: 7, background: '#f6f8fb', paddingBottom: 8 }}>
-            <div style={{ background: '#fff', border: '1px solid #e6ebf5', borderRadius: 8, padding: 10, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-              {sections.map(([k, t]) => (
-                <Button key={k} type={activeSection === k ? 'primary' : 'default'} size="small" onClick={() => document.getElementById(k)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
-                  {t}
-                </Button>
-              ))}
-            </div>
-          </div>
           <Row gutter={16}><Col span={18}><Typography.Title level={3} style={{ margin: 0 }}>{ent.name}</Typography.Title><Space><Typography.Text>CID: {ent.cid}</Typography.Text><Typography.Text>LE ID: {ent.leId}</Typography.Text><EnableTag status={ent.enableStatus} /><ReviewTag status={ent.reviewStatus} /></Space></Col><Col span={6}><Card size="small"><Typography.Text>下属商铺: {ent.shops.length}</Typography.Text><br /><Typography.Text>MID 数量: {ent.mids.length}</Typography.Text></Card></Col></Row>
           <Space wrap>{opButtons}</Space>
         </Space>
       </Card>
+
+      <div className="detail-section-nav-wrap">
+        <div className="detail-section-nav">
+          {sections.map(([k, t]) => (
+            <button
+              type="button"
+              key={k}
+              className={`detail-section-nav-item ${activeSection === k ? 'active' : ''}`}
+              onClick={() => document.getElementById(k)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+      </div>
 
       {Object.entries(ent.sections).map(([key, value]) => (
         <Card key={key} id={key} title={sections.find((s) => s[0] === key)?.[1]}>
