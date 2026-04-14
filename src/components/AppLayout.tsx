@@ -57,7 +57,6 @@ export const AppLayout = ({ children }: { children: React.ReactNode }) => {
         <Space style={{ width: '100%', justifyContent: 'space-between' }}>
           <Space>
             <img src="/logo.jpg" alt="KPay logo" style={{ height: 36, width: 'auto' }} />
-            <Typography.Title level={4} style={{ margin: 0, color: '#1F2A37' }}>KPay CRM</Typography.Title>
           </Space>
           <Space>
             <Select defaultValue="HK" style={{ width: 100 }} options={[{ value: 'HK', label: 'Hong Kong' }, { value: 'SG', label: 'Singapore' }]} />
