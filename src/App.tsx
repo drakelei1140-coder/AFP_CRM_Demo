@@ -7,11 +7,11 @@ import { EnterpriseListPage } from './pages/EnterpriseListPage';
 import { PlaceholderPage } from './pages/PlaceholderPage';
 
 export default function App() {
-  const brandPrimary = '#0F766E';
-  const brandPrimaryHover = '#13887f';
-  const brandPrimaryActive = '#0d5f59';
-  const brandSoft = '#E6F4F2';
-  const brandAccent = '#F4B400';
+  const brandPrimary = '#1F2A37';
+  const brandPrimaryHover = '#2b3a4c';
+  const brandPrimaryActive = '#18222e';
+  const brandSoft = '#F5F7FA';
+  const brandAccent = '#D79A3A';
 
   return (
     <ConfigProvider
@@ -26,10 +26,10 @@ export default function App() {
         },
         components: {
           Menu: {
-            itemSelectedBg: brandSoft,
+            itemSelectedBg: '#F6EFE3',
             itemSelectedColor: brandPrimary,
             subMenuItemSelectedColor: brandPrimary,
-            itemActiveBg: '#F3FBFA'
+            itemActiveBg: '#FAF5EC'
           },
           Button: {
             colorPrimary: brandPrimary,
@@ -37,13 +37,13 @@ export default function App() {
             colorPrimaryActive: brandPrimaryActive
           },
           Tag: {
-            defaultBg: '#F7FAFA'
+            defaultBg: '#FAF7F1'
           },
           Segmented: {
             itemSelectedBg: brandSoft
           },
           Select: {
-            optionSelectedBg: brandSoft
+            optionSelectedBg: '#FAF5EC'
           },
           Badge: {
             colorPrimary: brandAccent

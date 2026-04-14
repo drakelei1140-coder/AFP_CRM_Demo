@@ -45,7 +45,7 @@ export const EnterpriseDetailPage = () => {
   }, [ent, nav, reason, store, supplement]);
 
   return (
-    <Space direction="vertical" style={{ width: '100%' }} size={16}>
+    <div style={{ width: '100%' }}>
       <Card id="overview">
         <Space direction="vertical" style={{ width: '100%' }}>
           <Row gutter={16}><Col span={18}><Typography.Title level={3} style={{ margin: 0 }}>{ent.name}</Typography.Title><Space><Typography.Text>CID: {ent.cid}</Typography.Text><Typography.Text>LE ID: {ent.leId}</Typography.Text><EnableTag status={ent.enableStatus} /><ReviewTag status={ent.reviewStatus} /></Space></Col><Col span={6}><Card size="small"><Typography.Text>下属商铺: {ent.shops.length}</Typography.Text><br /><Typography.Text>MID 数量: {ent.mids.length}</Typography.Text></Card></Col></Row>
@@ -69,25 +69,25 @@ export const EnterpriseDetailPage = () => {
       </div>
 
       {Object.entries(ent.sections).map(([key, value]) => (
-        <Card key={key} id={key} title={sections.find((s) => s[0] === key)?.[1]}>
+        <Card key={key} id={key} title={sections.find((s) => s[0] === key)?.[1]} style={{ marginBottom: 16 }}>
           <Descriptions column={3} bordered size="small" items={Object.entries(value).map(([k, v]) => ({ key: k, label: k, children: v || '-' }))} />
         </Card>
       ))}
 
-      <Card id="afp" title="AFP 对接信息" extra={<Button onClick={() => setAfpOpen(true)}>查看详情</Button>}>
+      <Card id="afp" title="AFP 对接信息" extra={<Button onClick={() => setAfpOpen(true)}>查看详情</Button>} style={{ marginBottom: 16 }}>
         <Typography.Paragraph type="secondary">AFP 对接字段使用 AFP 接口字段名，仅展示关键概要信息。</Typography.Paragraph>
         <Descriptions column={3} bordered items={ent.afpSummary.map((i) => ({ key: i.key, label: i.key, children: i.value }))} />
       </Card>
 
-      <Card id="devices" title="拥有设备"><Table rowKey="id" pagination={false} dataSource={ent.devices} columns={[{ title: '设备ID', dataIndex: 'id' }, { title: '型号', dataIndex: 'model' }, { title: '状态', dataIndex: 'status' }, { title: '绑定商铺', dataIndex: 'bindShop' }]} /></Card>
-      <Card id="companies" title="相关公司"><List dataSource={ent.relatedCompanies} renderItem={(i) => <List.Item>{i.name} / {i.relation} / {i.id}</List.Item>} /></Card>
-      <Card id="people" title="相关人员"><List dataSource={ent.relatedPeople} renderItem={(i) => <List.Item>{i.name} / {i.role} / {i.mobile}</List.Item>} /></Card>
-      <Card id="timeline" title="修改记录时间轴"><Timeline items={ent.timeline.map((i) => ({ children: `${i.time} - ${i.operator} - ${i.action}${i.detail ? `（${i.detail}）` : ''}` }))} /></Card>
+      <Card id="devices" title="拥有设备" style={{ marginBottom: 16 }}><Table rowKey="id" pagination={false} dataSource={ent.devices} columns={[{ title: '设备ID', dataIndex: 'id' }, { title: '型号', dataIndex: 'model' }, { title: '状态', dataIndex: 'status' }, { title: '绑定商铺', dataIndex: 'bindShop' }]} /></Card>
+      <Card id="companies" title="相关公司" style={{ marginBottom: 16 }}><List dataSource={ent.relatedCompanies} renderItem={(i) => <List.Item>{i.name} / {i.relation} / {i.id}</List.Item>} /></Card>
+      <Card id="people" title="相关人员" style={{ marginBottom: 16 }}><List dataSource={ent.relatedPeople} renderItem={(i) => <List.Item>{i.name} / {i.role} / {i.mobile}</List.Item>} /></Card>
+      <Card id="timeline" title="修改记录时间轴" style={{ marginBottom: 16 }}><Timeline items={ent.timeline.map((i) => ({ children: `${i.time} - ${i.operator} - ${i.action}${i.detail ? `（${i.detail}）` : ''}` }))} /></Card>
 
       <Modal open={afpOpen} onCancel={() => setAfpOpen(false)} onOk={() => setAfpOpen(false)} title="AFP 详细字段">
         <Descriptions column={1} bordered items={Object.entries(ent.afpDetails).map(([k, v]) => ({ key: k, label: k, children: v }))} />
       </Modal>
       <Divider />
-    </Space>
+    </div>
   );
 };
