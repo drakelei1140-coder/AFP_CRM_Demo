@@ -1,5 +1,5 @@
-import { Alert, Button, Card, Col, Descriptions, Divider, Drawer, Form, Input, Row, Select, Space, Table, Tag, Timeline, Typography, message } from 'antd';
-import { useEffect, useMemo, useState } from 'react';
+import { Alert, Button, Card, Descriptions, Divider, Drawer, Form, Input, Select, Space, Tag, Timeline, Typography, message } from 'antd';
+import { type CSSProperties, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 type MerchantStatus = '待审核' | '基础资料审核' | '销售主管审核' | '风控核查' | '风控初级审核' | '风控中级审核' | '总经理审核' | '风控审核完成';
@@ -57,7 +57,18 @@ const navItems = [
   ['channelAfp', '渠道与 AFP Store 信息'], ['settlement', '结算与银行信息'], ['product', '产品与支付方式信息'], ['baPm', 'BA / Transfer Instrument / PM 信息'], ['specialRate', '特殊费率申请信息'], ['timeline', '修改记录时间轴']
 ] as const;
 
-const reviewTag = (status: MerchantStatus) => <Tag color={status === '风控审核完成' ? 'success' : status === '风控核查' ? 'warning' : 'processing'}>{status}</Tag>;
+const merchantStatusTagStyles: Record<MerchantStatus, CSSProperties> = {
+  待审核: { background: '#FFF7E6', borderColor: '#FFD591', color: '#D48806' },
+  基础资料审核: { background: '#EEF3FF', borderColor: '#B4C8FF', color: '#1D39C4' },
+  销售主管审核: { background: '#F0F5FF', borderColor: '#ADC6FF', color: '#1D39C4' },
+  风控核查: { background: '#FFFBE6', borderColor: '#FFE58F', color: '#D48806' },
+  风控初级审核: { background: '#F6FFED', borderColor: '#B7EB8F', color: '#389E0D' },
+  风控中级审核: { background: '#E6FFFB', borderColor: '#87E8DE', color: '#08979C' },
+  总经理审核: { background: '#F9F0FF', borderColor: '#D3ADF7', color: '#531DAB' },
+  风控审核完成: { background: '#F6FFED', borderColor: '#B7EB8F', color: '#237804' }
+};
+
+const reviewTag = (status: MerchantStatus) => <Tag style={merchantStatusTagStyles[status]}>{status}</Tag>;
 
 export const MerchantReviewDetailPage = () => {
   const { id = '' } = useParams();
@@ -170,7 +181,7 @@ export const MerchantReviewDetailPage = () => {
   const actionsForEntity = (status: EntityStatus) => ['待审核', '待风控审核'].includes(status) ? ['查看详情', '审核'] : ['查看详情'];
 
   return (
-    <Space direction="vertical" size={16} style={{ width: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16, width: '100%' }}>
       <div>
         <Typography.Title level={3} style={{ margin: 0 }}>商户审核详情</Typography.Title>
         <Typography.Text type="secondary">MID 审核主处理页</Typography.Text>
@@ -227,7 +238,7 @@ export const MerchantReviewDetailPage = () => {
       <ModalTransfer open={transferOpen} onClose={() => setTransferOpen(false)} onSubmit={(person) => { appendTimeline('转交审核', `已转交给 ${person}`); setTransferOpen(false); message.success('已转交审核（demo模拟）'); }} />
 
       <Divider />
-    </Space>
+    </div>
   );
 };
 
