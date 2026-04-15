@@ -4,6 +4,7 @@ import { AppLayout } from './components/AppLayout';
 import { EnterpriseDetailPage } from './pages/EnterpriseDetailPage';
 import { EnterpriseEditPage } from './pages/EnterpriseEditPage';
 import { EnterpriseListPage } from './pages/EnterpriseListPage';
+import { MerchantReviewListPage } from './pages/MerchantReviewListPage';
 import { PlaceholderPage } from './pages/PlaceholderPage';
 import { ShopDetailPage } from './pages/ShopDetailPage';
 import { ShopEditPage } from './pages/ShopEditPage';
@@ -61,6 +62,7 @@ export default function App() {
           <Route path="/shops" element={<ShopListPage />} />
           <Route path="/shops/:id" element={<ShopDetailPage />} />
           <Route path="/shops/:id/edit" element={<ShopEditPage />} />
+          <Route path="/merchants" element={<MerchantReviewListPage />} />
           <Route path="/enterprises/:id" element={<EnterpriseDetailPage />} />
           <Route path="/enterprises/:id/edit" element={<EnterpriseEditPage />} />
           <Route path="*" element={<PlaceholderPage />} />
