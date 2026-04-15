@@ -1,6 +1,6 @@
 import { Button, Card, Col, DatePicker, Form, Input, Row, Select, Space, Table, Tag, Tooltip, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { useMemo, useState } from 'react';
+import { type CSSProperties, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 type MerchantReviewStatus =
@@ -50,8 +50,17 @@ const mockMerchants: MerchantRow[] = [
 const collapsedFields = ['MID', '商户审核状态', 'CID', 'SID', '渠道编码', '创建时间'];
 
 const statusTag = (status: MerchantReviewStatus) => {
-  const colorMap: Record<MerchantReviewStatus, string> = { 待审核: 'default', 基础资料审核: 'processing', 销售主管审核: 'processing', 风控核查: 'warning', 风控初级审核: 'processing', 风控中级审核: 'processing', 总经理审核: 'purple', 风控审核完成: 'success' };
-  return <Tag color={colorMap[status]}>{status}</Tag>;
+  const styleMap: Record<MerchantReviewStatus, CSSProperties> = {
+    待审核: { background: '#FFF7E6', borderColor: '#FFD591', color: '#D48806' },
+    基础资料审核: { background: '#EEF3FF', borderColor: '#B4C8FF', color: '#1D39C4' },
+    销售主管审核: { background: '#F0F5FF', borderColor: '#ADC6FF', color: '#1D39C4' },
+    风控核查: { background: '#FFFBE6', borderColor: '#FFE58F', color: '#D48806' },
+    风控初级审核: { background: '#F6FFED', borderColor: '#B7EB8F', color: '#389E0D' },
+    风控中级审核: { background: '#E6FFFB', borderColor: '#87E8DE', color: '#08979C' },
+    总经理审核: { background: '#F9F0FF', borderColor: '#D3ADF7', color: '#531DAB' },
+    风控审核完成: { background: '#F6FFED', borderColor: '#B7EB8F', color: '#237804' }
+  };
+  return <Tag style={styleMap[status]}>{status}</Tag>;
 };
 
 export const MerchantReviewListPage = () => {
