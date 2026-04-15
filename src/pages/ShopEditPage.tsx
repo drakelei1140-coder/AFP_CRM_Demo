@@ -114,7 +114,7 @@ export const ShopEditPage = () => {
         </Card>
 
         <Card title="AFP 相关信息展示区" style={{ marginTop: 16 }}>
-          <Alert type="info" showIcon message="AFP 相关信息由通道返回或同步，本页仅展示，不支持编辑。" style={{ marginBottom: 12 }} />
+          <Alert type="info" showIcon message="AFP 相关信息由通道返回或同步，本页仅展示，不支持编辑。" style={{ marginBottom: 12, background: '#f1f1f1' }} />
           <Descriptions bordered column={3} items={[
             { key: 'storeId', label: 'id', children: shopEditMock.afp.storeId },
             { key: 'reference', label: 'reference', children: shopEditMock.afp.reference },
