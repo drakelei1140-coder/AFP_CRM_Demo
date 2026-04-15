@@ -5,6 +5,7 @@ import { EnterpriseDetailPage } from './pages/EnterpriseDetailPage';
 import { EnterpriseEditPage } from './pages/EnterpriseEditPage';
 import { EnterpriseListPage } from './pages/EnterpriseListPage';
 import { PlaceholderPage } from './pages/PlaceholderPage';
+import { ShopListPage } from './pages/ShopListPage';
 
 export default function App() {
   const brandPrimary = '#1F2A37';
@@ -55,6 +56,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/enterprises" replace />} />
           <Route path="/enterprises" element={<EnterpriseListPage />} />
+          <Route path="/shops" element={<ShopListPage />} />
           <Route path="/enterprises/:id" element={<EnterpriseDetailPage />} />
           <Route path="/enterprises/:id/edit" element={<EnterpriseEditPage />} />
           <Route path="*" element={<PlaceholderPage />} />
