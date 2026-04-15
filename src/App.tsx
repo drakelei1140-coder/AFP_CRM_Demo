@@ -6,6 +6,7 @@ import { EnterpriseEditPage } from './pages/EnterpriseEditPage';
 import { EnterpriseListPage } from './pages/EnterpriseListPage';
 import { PlaceholderPage } from './pages/PlaceholderPage';
 import { ShopDetailPage } from './pages/ShopDetailPage';
+import { ShopEditPage } from './pages/ShopEditPage';
 import { ShopListPage } from './pages/ShopListPage';
 
 export default function App() {
@@ -59,6 +60,7 @@ export default function App() {
           <Route path="/enterprises" element={<EnterpriseListPage />} />
           <Route path="/shops" element={<ShopListPage />} />
           <Route path="/shops/:id" element={<ShopDetailPage />} />
+          <Route path="/shops/:id/edit" element={<ShopEditPage />} />
           <Route path="/enterprises/:id" element={<EnterpriseDetailPage />} />
           <Route path="/enterprises/:id/edit" element={<EnterpriseEditPage />} />
           <Route path="*" element={<PlaceholderPage />} />
