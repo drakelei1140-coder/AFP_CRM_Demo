@@ -9,6 +9,7 @@ import { MerchantCreatePage } from './pages/MerchantCreatePage';
 import { MerchantReviewDetailPage } from './pages/MerchantReviewDetailPage';
 import { MerchantReviewListPage } from './pages/MerchantReviewListPage';
 import { MerchantReviewEditPage } from './pages/MerchantReviewEditPage';
+import { MerchantOnboardingListPage } from './pages/MerchantOnboardingListPage';
 import { PlaceholderPage } from './pages/PlaceholderPage';
 import { ShopCreatePage } from './pages/ShopCreatePage';
 import { ShopDetailPage } from './pages/ShopDetailPage';
@@ -73,6 +74,7 @@ export default function App() {
           <Route path="/merchants/new" element={<MerchantCreatePage />} />
           <Route path="/merchants/:id" element={<MerchantReviewDetailPage />} />
           <Route path="/merchants/:id/edit" element={<MerchantReviewEditPage />} />
+          <Route path="/onboarding" element={<MerchantOnboardingListPage />} />
           <Route path="/enterprises/:id" element={<EnterpriseDetailPage />} />
           <Route path="/enterprises/:id/edit" element={<EnterpriseEditPage />} />
           <Route path="*" element={<PlaceholderPage />} />
