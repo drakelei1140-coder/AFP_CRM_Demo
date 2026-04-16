@@ -140,11 +140,13 @@ export const MerchantReviewDetailPage = () => {
 
   const topActions = useMemo(() => {
     const disabledByBlock = blocked;
+    const editBtn = <Button key="edit" onClick={() => navigate(`/merchants/${data.id}/edit`)}>编辑</Button>;
     if (data.merchantStatus === '待审核') {
-      return [<Button key="start" type="primary" onClick={() => setMerchantStatus('基础资料审核', '开始核查', '进入基础资料审核')}>开始核查</Button>];
+      return [editBtn, <Button key="start" type="primary" onClick={() => setMerchantStatus('基础资料审核', '开始核查', '进入基础资料审核')}>开始核查</Button>];
     }
     if (data.merchantStatus === '基础资料审核') {
       return [
+        editBtn,
         <Button key="cancel">取消簽約</Button>,
         <Button key="copy">從已有商戶複製資料</Button>,
         <Button key="transfer" onClick={() => setTransferOpen(true)}>轉交審核</Button>,
@@ -153,9 +155,10 @@ export const MerchantReviewDetailPage = () => {
     }
     if (data.merchantStatus === '风控核查') {
       if (data.riskCheckStage === 1) {
-        return [<Button key="startRisk" type="primary" onClick={() => setData((p) => ({ ...p, riskCheckStage: 2 }))}>开始核查</Button>];
+        return [editBtn, <Button key="startRisk" type="primary" onClick={() => setData((p) => ({ ...p, riskCheckStage: 2 }))}>开始核查</Button>];
       }
       return [
+        editBtn,
         <Button key="notify">通知BD（OS补件）</Button>,
         <Button key="cancel">取消签约</Button>,
         <Button key="score" disabled={disabledByBlock}>风险评分风控核查</Button>,
@@ -167,6 +170,7 @@ export const MerchantReviewDetailPage = () => {
     }
     if (data.merchantStatus === '风控初级审核' || data.merchantStatus === '风控中级审核' || data.merchantStatus === '总经理审核') {
       return [
+        editBtn,
         <Button key="notify">通知BD（OS补件）</Button>,
         <Button key="cancel">取消签约</Button>,
         <Button key="back">退回审核</Button>,
@@ -176,7 +180,7 @@ export const MerchantReviewDetailPage = () => {
       ];
     }
     return [];
-  }, [data.merchantStatus, data.riskCheckStage, blocked]);
+  }, [data.id, data.merchantStatus, data.riskCheckStage, blocked, navigate]);
 
   const actionsForEntity = (status: EntityStatus) => ['待审核', '待风控审核'].includes(status) ? ['查看详情', '审核'] : ['查看详情'];
 
