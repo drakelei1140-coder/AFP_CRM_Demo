@@ -13,7 +13,7 @@ const DEVICE_OPTIONS: DeviceOption[] = [
   { id: 'device-3', model: 'MPOS-601', category: 'mPOS', serialNo: 'SN-900003', status: '库存可分配' }
 ];
 
-const navItems = [
+const createNavItems = [
   ['keys', '商铺主键与关联'],
   ['names', '商铺名称信息'],
   ['operation', '商铺主体与经营信息'],
@@ -23,17 +23,6 @@ const navItems = [
   ['files', '商铺文件信息'],
   ['risk', '风控 / 业务信息'],
   ['devices', '关联终端设备']
-] as const;
-
-const navItems = [
-  ['keys', '商铺主键与关联'],
-  ['names', '商铺名称信息'],
-  ['operation', '商铺主体与经营信息'],
-  ['basic', '商铺基础经营数据'],
-  ['contact', '商铺联系信息'],
-  ['address', '商铺地址信息'],
-  ['files', '商铺文件信息'],
-  ['risk', '风控 / 业务信息']
 ] as const;
 
 export const ShopCreatePage = () => {
@@ -50,7 +39,7 @@ export const ShopCreatePage = () => {
   const { enterprises } = useEnterpriseStore();
 
   useEffect(() => {
-    const nodes = navItems.map(([k]) => document.getElementById(k)).filter(Boolean) as HTMLElement[];
+    const nodes = createNavItems.map(([k]) => document.getElementById(k)).filter(Boolean) as HTMLElement[];
     const observer = new IntersectionObserver((entries) => {
       const current = entries.filter((e) => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
       if (current?.target?.id) setActiveSection(current.target.id);
@@ -90,7 +79,7 @@ export const ShopCreatePage = () => {
   return (
     <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <Card><Typography.Title level={3} style={{ margin: 0 }}>新增商铺</Typography.Title><Typography.Text type="secondary">先选择企业，保存后进入待审核状态。</Typography.Text></Card>
-      <div className="detail-section-nav-wrap" style={{ position: 'sticky', top: 88, zIndex: 20 }}><div className="detail-section-nav">{navItems.map(([k, t]) => <button key={k} type="button" className={`detail-section-nav-item ${activeSection === k ? 'active' : ''}`} onClick={() => document.getElementById(k)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>{t}</button>)}</div></div>
+      <div className="detail-section-nav-wrap" style={{ position: 'sticky', top: 88, zIndex: 20 }}><div className="detail-section-nav">{createNavItems.map(([k, t]) => <button key={k} type="button" className={`detail-section-nav-item ${activeSection === k ? 'active' : ''}`} onClick={() => document.getElementById(k)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>{t}</button>)}</div></div>
 
       <Form form={form} layout="vertical">
         <Card id="keys" title="商铺主键与关联信息区" extra={<Space><Button onClick={copyFromEnterprise}>从企业复制信息</Button><Button onClick={() => setEnterpriseOpen(true)}>选择企业</Button></Space>}>
