@@ -1,4 +1,4 @@
-import { Button, Card, Col, Descriptions, Form, Input, Modal, Row, Select, Space, Table, Typography, message } from 'antd';
+import { Button, Card, Col, Descriptions, Form, Input, Row, Select, Space, Table, Typography, message } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -126,7 +126,13 @@ export const ShopEditPage = () => {
 
         <Card title="关联企业信息展示区" style={{ marginTop: 16 }}><Table rowKey="cid" pagination={false} dataSource={shopEditMock.relatedEnterprise} columns={[{ title: '企业名称', dataIndex: 'name' }, { title: '企业编号', dataIndex: 'cid' }, { title: '地区', dataIndex: 'region' }, { title: '启用状态', dataIndex: 'enableStatus' }, { title: '审核状态', dataIndex: 'reviewStatus' }, { title: '操作', render: () => <Button type="link">查看详情</Button> }]} /></Card>
         <Card title="关联 MID 信息展示区" style={{ marginTop: 16 }}><Table rowKey="mid" pagination={false} dataSource={shopEditMock.relatedMid} columns={[{ title: 'MID 编号', dataIndex: 'mid' }, { title: '第三方渠道 MID', dataIndex: 'thirdMid' }, { title: '服务通道', dataIndex: 'channel' }, { title: '当前状态', dataIndex: 'status' }, { title: '更新时间', dataIndex: 'updatedAt' }, { title: '操作', render: () => <Button type="link">查看详情</Button> }]} /></Card>
-        <Card title="关联终端设备信息展示区" style={{ marginTop: 16 }}><Table rowKey="model" pagination={false} dataSource={shopEditMock.relatedDevices} columns={[{ title: '设备型号', dataIndex: 'model' }, { title: '设备分类', dataIndex: 'category' }, { title: '数量', dataIndex: 'quantity' }, { title: '绑定状态', dataIndex: 'bindStatus' }, { title: '更新时间', dataIndex: 'updatedAt' }]} /></Card>
+        <Card
+          title="关联终端设备信息展示区"
+          style={{ marginTop: 16 }}
+          extra={<Space><Button>增加设备</Button><Button>回收设备</Button></Space>}
+        >
+          <Table rowKey="model" pagination={false} dataSource={shopEditMock.relatedDevices} columns={[{ title: '设备型号', dataIndex: 'model' }, { title: '设备分类', dataIndex: 'category' }, { title: '数量', dataIndex: 'quantity' }, { title: '绑定状态', dataIndex: 'bindStatus' }, { title: '更新时间', dataIndex: 'updatedAt' }]} />
+        </Card>
 
         <div className="sticky-bottom-actions" style={{ position: 'sticky', bottom: 0, zIndex: 30, marginTop: 16 }}>
           <Space><Button type="primary" htmlType="submit">保存并提交审核</Button><Button onClick={() => navigate(-1)}>取消</Button></Space>
