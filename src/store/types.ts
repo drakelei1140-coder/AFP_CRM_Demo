@@ -56,3 +56,13 @@ export interface Enterprise {
   mids: RelatedMid[];
   timeline: TimelineItem[];
 }
+
+export interface EnterpriseDraft {
+  id: string;
+  operator: string;
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+  cidPreview: string;
+  payload: Record<string, string>;
+}
