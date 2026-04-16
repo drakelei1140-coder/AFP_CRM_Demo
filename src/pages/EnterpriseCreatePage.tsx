@@ -1,5 +1,5 @@
-import { Button, Card, Col, Form, Input, Modal, Row, Select, Space, Table, Tag, Typography, message } from 'antd';
-import { useMemo, useState } from 'react';
+import { Button, Card, Col, Form, Input, Modal, Row, Select, Space, Table, Typography, message } from 'antd';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useEnterpriseStore } from '../store/enterpriseStore';
 
@@ -15,21 +15,22 @@ const DRAFT_KEY = 'enterprise-drafts';
 const OPERATOR = 'Ops User';
 
 const navItems = [
-  '企业主键与关联',
-  '企业名称信息',
-  '企业主体与经营信息',
-  '企业基础经营数据',
-  '企业联系信息',
-  '企业地址信息',
-  '企业文件信息',
-  '风控 / 业务信息',
-  '相关人员'
-];
+  ['keys', '企业主键与关联'],
+  ['names', '企业名称信息'],
+  ['operation', '企业主体与经营信息'],
+  ['basic', '企业基础经营数据'],
+  ['contact', '企业联系信息'],
+  ['address', '企业地址信息'],
+  ['file', '企业文件信息'],
+  ['risk', '风控 / 业务信息'],
+  ['people', '相关人员']
+] as const;
 
 export const EnterpriseCreatePage = () => {
   const [form] = Form.useForm();
   const [draftOpen, setDraftOpen] = useState(false);
   const [draftKeyword, setDraftKeyword] = useState('');
+  const [activeSection, setActiveSection] = useState<string>('keys');
   const navigate = useNavigate();
   const { enterprises } = useEnterpriseStore();
 
@@ -50,6 +51,16 @@ export const EnterpriseCreatePage = () => {
     navigate(`/enterprises/${enterprises[0].id}`);
   };
 
+  useEffect(() => {
+    const nodes = navItems.map(([k]) => document.getElementById(k)).filter(Boolean) as HTMLElement[];
+    const observer = new IntersectionObserver((entries) => {
+      const current = entries.filter((e) => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (current?.target?.id) setActiveSection(current.target.id);
+    }, { rootMargin: '-180px 0px -65% 0px', threshold: [0.1, 0.3, 0.6] });
+    nodes.forEach((n) => observer.observe(n));
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <Card>
@@ -58,18 +69,24 @@ export const EnterpriseCreatePage = () => {
       </Card>
 
       <div className="detail-section-nav-wrap" style={{ position: 'sticky', top: 88, zIndex: 20 }}>
-        <div className="detail-section-nav">{navItems.map((n) => <Tag key={n} color="default">{n}</Tag>)}</div>
+        <div className="detail-section-nav">
+          {navItems.map(([k, n]) => (
+            <button type="button" key={k} className={`detail-section-nav-item ${activeSection === k ? 'active' : ''}`} onClick={() => document.getElementById(k)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
+              {n}
+            </button>
+          ))}
+        </div>
       </div>
 
       <Form form={form} layout="vertical" initialValues={{ relatedPeople: [{ name: '', role: '', mobile: '' }] }}>
-        <Card title="企业主键与关联信息区">
+        <Card id="keys" title="企业主键与关联信息区">
           <Row gutter={16}>
             <Col span={8}><Form.Item label="默认主联系人人员ID" name="默认主联系人人员ID"><Input /></Form.Item></Col>
             <Col span={8}><Form.Item label="上級公司ID" name="上級公司ID"><Input /></Form.Item></Col>
           </Row>
         </Card>
 
-        <Card title="企业名称信息区" style={{ marginTop: 16 }}>
+        <Card id="names" title="企业名称信息区" style={{ marginTop: 16 }}>
           <Row gutter={16}>
             <Col span={8}><Form.Item label="商戶中文名稱" name="商戶中文名稱" rules={[{ required: true }]}><Input /></Form.Item></Col>
             <Col span={8}><Form.Item label="商戶中文簡稱" name="商戶中文簡稱" rules={[{ required: true }]}><Input /></Form.Item></Col>
@@ -85,7 +102,7 @@ export const EnterpriseCreatePage = () => {
           </Row>
         </Card>
 
-        <Card title="企业主体与经营信息区" style={{ marginTop: 16 }}>
+        <Card id="operation" title="企业主体与经营信息区" style={{ marginTop: 16 }}>
           <Row gutter={16}>
             <Col span={8}><Form.Item label="公司模式" name="公司模式" rules={[{ required: true }]}><Select options={[{ value: '直营' }, { value: '加盟' }, { value: '连锁' }, { value: '其他' }]} /></Form.Item></Col>
             <Col span={8}><Form.Item label="是否子公司" name="是否子公司"><Select options={[{ value: '是' }, { value: '否' }]} /></Form.Item></Col>
@@ -103,7 +120,7 @@ export const EnterpriseCreatePage = () => {
           </Row>
         </Card>
 
-        <Card title="企业基础经营数据区" style={{ marginTop: 16 }}>
+        <Card id="basic" title="企业基础经营数据区" style={{ marginTop: 16 }}>
           <Row gutter={16}>
             <Col span={8}><Form.Item label="進件通道(必須)" name="進件通道(必須)"><Input /></Form.Item></Col>
             <Col span={8}><Form.Item label="每宗交易平均金額" name="每宗交易平均金額"><Input /></Form.Item></Col>
@@ -121,7 +138,7 @@ export const EnterpriseCreatePage = () => {
           </Row>
         </Card>
 
-        <Card title="企业联系信息区" style={{ marginTop: 16 }}>
+        <Card id="contact" title="企业联系信息区" style={{ marginTop: 16 }}>
           <Row gutter={16}>
             <Col span={8}><Form.Item label="公司電話" name="公司電話"><Input /></Form.Item></Col>
             <Col span={8}><Form.Item label="手提電話" name="手提電話"><Input /></Form.Item></Col>
@@ -132,7 +149,7 @@ export const EnterpriseCreatePage = () => {
           </Row>
         </Card>
 
-        <Card title="企业地址信息区" style={{ marginTop: 16 }}>
+        <Card id="address" title="企业地址信息区" style={{ marginTop: 16 }}>
           <Row gutter={16}>
             <Col span={12}><Form.Item label="註冊辦事處地址" name="註冊辦事處地址"><Input /></Form.Item></Col>
             <Col span={12}><Form.Item label="註冊辦事處地址(英文)" name="註冊辦事處地址(英文)"><Input /></Form.Item></Col>
@@ -153,7 +170,7 @@ export const EnterpriseCreatePage = () => {
           </Row>
         </Card>
 
-        <Card title="企业文件信息区" style={{ marginTop: 16 }}>
+        <Card id="file" title="企业文件信息区" style={{ marginTop: 16 }}>
           <Row gutter={16}>
             <Col span={8}><Form.Item label="商戶篩查報告" name="商戶篩查報告"><Input /></Form.Item></Col>
             <Col span={8}><Form.Item label="企業架構文件" name="企業架構文件"><Input /></Form.Item></Col>
@@ -163,7 +180,7 @@ export const EnterpriseCreatePage = () => {
           </Row>
         </Card>
 
-        <Card title="风控 / 业务信息区" style={{ marginTop: 16 }}>
+        <Card id="risk" title="风控 / 业务信息区" style={{ marginTop: 16 }}>
           <Row gutter={16}>
             <Col span={8}><Form.Item label="風控類型" name="風控類型"><Input /></Form.Item></Col>
             <Col span={8}><Form.Item label="風險等級" name="風險等級"><Input /></Form.Item></Col>
@@ -175,7 +192,7 @@ export const EnterpriseCreatePage = () => {
           </Row>
         </Card>
 
-        <Card title="相关人员编辑区" style={{ marginTop: 16 }}>
+        <Card id="people" title="相关人员编辑区" style={{ marginTop: 16 }}>
           <Form.List name="relatedPeople">
             {(fields, { add, remove }) => (
               <Space direction="vertical" style={{ width: '100%' }} size={12}>
