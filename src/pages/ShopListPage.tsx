@@ -106,7 +106,7 @@ export const ShopListPage = () => {
       <Card bodyStyle={{ paddingBottom: 0 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
           <Typography.Title level={5} style={{ margin: 0 }}>商铺列表</Typography.Title>
-          <Space><Button>导出</Button><Button>导入</Button></Space>
+          <Space><Button>导出</Button><Button>导入</Button><Button type="primary" onClick={() => navigate("/shops/new")}>新增</Button></Space>
         </div>
         <Table rowKey="id" dataSource={rows} pagination={{ pageSize: 8 }} scroll={{ x: 3800 }} columns={[
           { title: '商铺名称（本地语言）', dataIndex: 'nameLocal', width: 360, render: (v) => <Tooltip title={v}><Typography.Paragraph ellipsis={{ rows: 3 }} style={{ marginBottom: 0 }}>{v}</Typography.Paragraph></Tooltip> },

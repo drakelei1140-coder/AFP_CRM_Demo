@@ -143,10 +143,6 @@ export const EnterpriseEditPage = () => {
         </Card>
       </Form>
 
-      <Card title="AFP 相关信息展示区">
-        <Alert showIcon type="info" message="AFP 相关信息由通道返回或同步，本页仅展示，不支持编辑。" style={{ marginBottom: 12 }} />
-        <Descriptions bordered items={ent.afpSummary.map((i) => ({ key: i.key, label: i.key, children: i.value }))} />
-      </Card>
 
       <Card title="关联商铺信息展示区">
         <Table rowKey="id" pagination={false} dataSource={ent.shops} columns={[{ title: '商铺名称', dataIndex: 'name' }, { title: '商铺编号', dataIndex: 'id' }, { title: '地区', dataIndex: 'region' }, { title: '启用状态', dataIndex: 'enableStatus' }, { title: '审核状态', dataIndex: 'reviewStatus' }, { title: '操作', render: () => <Button type="link">查看详情</Button> }]} />

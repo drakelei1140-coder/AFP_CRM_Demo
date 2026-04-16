@@ -155,7 +155,7 @@ export const MerchantReviewListPage = () => {
       <Card bodyStyle={{ paddingBottom: 0 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
           <Typography.Title level={5} style={{ margin: 0 }}>商户审核列表</Typography.Title>
-          <Space><Button>导出</Button><Button>导入</Button></Space>
+          <Space><Button>导出</Button><Button>导入</Button><Button type="primary" onClick={() => navigate("/merchants/new")}>新增</Button></Space>
         </div>
 
         <Table rowKey="id" dataSource={rows} pagination={{ pageSize: 10 }} scroll={{ x: 3000 }} columns={columns} />

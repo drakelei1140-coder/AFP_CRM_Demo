@@ -1,4 +1,4 @@
-import { Alert, Button, Card, Col, Descriptions, Form, Input, Row, Select, Space, Table, Typography, message } from 'antd';
+import { Button, Card, Col, Descriptions, Form, Input, Row, Select, Space, Table, Typography, message } from 'antd';
 import { useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -113,14 +113,6 @@ export const ShopEditPage = () => {
           </Row>
         </Card>
 
-        <Card title="AFP 相关信息展示区" style={{ marginTop: 16 }}>
-          <Alert type="info" showIcon message="AFP 相关信息由通道返回或同步，本页仅展示，不支持编辑。" style={{ marginBottom: 12, background: '#f1f1f1' }} />
-          <Descriptions bordered column={3} items={[
-            { key: 'storeId', label: 'id', children: shopEditMock.afp.storeId },
-            { key: 'reference', label: 'reference', children: shopEditMock.afp.reference },
-            { key: 'status', label: 'status', children: shopEditMock.afp.status }
-          ]} />
-        </Card>
 
         <Card title="关联企业信息展示区" style={{ marginTop: 16 }}>
           <Table rowKey="cid" pagination={false} dataSource={shopEditMock.relatedEnterprise} columns={[

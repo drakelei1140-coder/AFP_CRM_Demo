@@ -1,4 +1,4 @@
-import { Button, Card, Col, Descriptions, Divider, Input, List, Modal, Row, Space, Table, Timeline, Typography } from 'antd';
+import { Button, Card, Col, Descriptions, Input, List, Modal, Row, Space, Table, Timeline, Typography } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { EnableTag, ReviewTag } from '../components/StatusTag';
@@ -6,8 +6,8 @@ import { useEnterpriseStore } from '../store/enterpriseStore';
 
 const sections = [
   ['overview', '企业概览'], ['keys', '企业主键与关联'], ['names', '企业名称信息'], ['operation', '企业主体与经营信息'], ['basic', '企业基础经营数据'],
-  ['contact', '企业联系信息'], ['address', '企业地址信息'], ['file', '企业文件信息'], ['risk', '风控 / 业务信息'], ['blah', 'BL / AH 信息'],
-  ['afp', 'AFP 对接信息'], ['devices', '拥有设备'], ['companies', '相关公司'], ['people', '相关人员'], ['timeline', '修改记录时间轴']
+  ['contact', '企业联系信息'], ['address', '企业地址信息'], ['file', '企业文件信息'], ['risk', '风控 / 业务信息'],
+  ['shops', '下属商铺'], ['companies', '相关公司'], ['people', '相关人员'], ['timeline', '修改记录时间轴']
 ] as const;
 
 export const EnterpriseDetailPage = () => {
@@ -17,20 +17,14 @@ export const EnterpriseDetailPage = () => {
   const ent = store.getEnterprise(id);
   const [reason, setReason] = useState('');
   const [supplement, setSupplement] = useState('');
-  const [afpOpen, setAfpOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string>('overview');
 
   useEffect(() => {
     const targets = sections.map(([key]) => document.getElementById(key)).filter(Boolean) as HTMLElement[];
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const current = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (current?.target?.id) setActiveSection(current.target.id);
-      },
-      { root: null, rootMargin: '-160px 0px -65% 0px', threshold: [0.05, 0.2, 0.5, 0.8] }
-    );
+    const observer = new IntersectionObserver((entries) => {
+      const current = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (current?.target?.id) setActiveSection(current.target.id);
+    }, { root: null, rootMargin: '-160px 0px -65% 0px', threshold: [0.05, 0.2, 0.5, 0.8] });
     targets.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, [ent?.id]);
@@ -48,46 +42,25 @@ export const EnterpriseDetailPage = () => {
     <div style={{ width: '100%' }}>
       <Card id="overview">
         <Space direction="vertical" style={{ width: '100%' }}>
-          <Row gutter={16}><Col span={18}><Typography.Title level={3} style={{ margin: 0 }}>{ent.name}</Typography.Title><Space><Typography.Text>CID: {ent.cid}</Typography.Text><Typography.Text>LE ID: {ent.leId}</Typography.Text><EnableTag status={ent.enableStatus} /><ReviewTag status={ent.reviewStatus} /></Space></Col><Col span={6}><Card size="small"><Typography.Text>下属商铺: {ent.shops.length}</Typography.Text><br /><Typography.Text>MID 数量: {ent.mids.length}</Typography.Text></Card></Col></Row>
+          <Row gutter={16}><Col span={18}><Typography.Title level={3} style={{ margin: 0 }}>{ent.name}</Typography.Title><Space><Typography.Text>CID: {ent.cid}</Typography.Text><EnableTag status={ent.enableStatus} /><ReviewTag status={ent.reviewStatus} /></Space></Col><Col span={6}><Card size="small"><Typography.Text>下属商铺: {ent.shops.length}</Typography.Text><br /><Typography.Text>MID 数量: {ent.mids.length}</Typography.Text></Card></Col></Row>
           <Space wrap>{opButtons}</Space>
         </Space>
       </Card>
 
-      <div className="detail-section-nav-wrap">
-        <div className="detail-section-nav">
-          {sections.map(([k, t]) => (
-            <button
-              type="button"
-              key={k}
-              className={`detail-section-nav-item ${activeSection === k ? 'active' : ''}`}
-              onClick={() => document.getElementById(k)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-            >
-              {t}
-            </button>
-          ))}
-        </div>
-      </div>
+      <div className="detail-section-nav-wrap"><div className="detail-section-nav">{sections.map(([k, t]) => <button type="button" key={k} className={`detail-section-nav-item ${activeSection === k ? 'active' : ''}`} onClick={() => document.getElementById(k)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>{t}</button>)}</div></div>
 
-      {Object.entries(ent.sections).map(([key, value]) => (
+      {Object.entries(ent.sections).filter(([key]) => !['blah'].includes(key)).map(([key, value]) => (
         <Card key={key} id={key} title={sections.find((s) => s[0] === key)?.[1]} style={{ marginBottom: 16 }}>
-          <Descriptions column={3} bordered size="small" items={Object.entries(value).map(([k, v]) => ({ key: k, label: k, children: v || '-' }))} />
+          <Descriptions column={3} bordered size="small" items={Object.entries(value).filter(([label]) => !label.includes('LE')).map(([k, v]) => ({ key: k, label: k, children: v || '-' }))} />
         </Card>
       ))}
 
-      <Card id="afp" title="AFP 对接信息" extra={<Button onClick={() => setAfpOpen(true)}>查看详情</Button>} style={{ marginBottom: 16 }}>
-        <Typography.Paragraph type="secondary">AFP 对接字段使用 AFP 接口字段名，仅展示关键概要信息。</Typography.Paragraph>
-        <Descriptions column={3} bordered items={ent.afpSummary.map((i) => ({ key: i.key, label: i.key, children: i.value }))} />
+      <Card id="shops" title="下属商铺" extra={<Button type="primary" onClick={() => nav(`/shops/new?enterpriseId=${ent.id}`)}>新增商铺</Button>} style={{ marginBottom: 16 }}>
+        <Table rowKey="id" pagination={false} dataSource={ent.shops} columns={[{ title: '商铺名称', dataIndex: 'name' }, { title: '商铺编号', dataIndex: 'id' }, { title: '地区', dataIndex: 'region' }, { title: '启用状态', dataIndex: 'enableStatus' }, { title: '审核状态', dataIndex: 'reviewStatus' }]} />
       </Card>
-
-      <Card id="devices" title="拥有设备" style={{ marginBottom: 16 }}><Table rowKey="id" pagination={false} dataSource={ent.devices} columns={[{ title: '设备ID', dataIndex: 'id' }, { title: '型号', dataIndex: 'model' }, { title: '状态', dataIndex: 'status' }, { title: '绑定商铺', dataIndex: 'bindShop' }]} /></Card>
       <Card id="companies" title="相关公司" style={{ marginBottom: 16 }}><List dataSource={ent.relatedCompanies} renderItem={(i) => <List.Item>{i.name} / {i.relation} / {i.id}</List.Item>} /></Card>
       <Card id="people" title="相关人员" style={{ marginBottom: 16 }}><List dataSource={ent.relatedPeople} renderItem={(i) => <List.Item>{i.name} / {i.role} / {i.mobile}</List.Item>} /></Card>
       <Card id="timeline" title="修改记录时间轴" style={{ marginBottom: 16 }}><Timeline items={ent.timeline.map((i) => ({ children: `${i.time} - ${i.operator} - ${i.action}${i.detail ? `（${i.detail}）` : ''}` }))} /></Card>
-
-      <Modal open={afpOpen} onCancel={() => setAfpOpen(false)} onOk={() => setAfpOpen(false)} title="AFP 详细字段">
-        <Descriptions column={1} bordered items={Object.entries(ent.afpDetails).map(([k, v]) => ({ key: k, label: k, children: v }))} />
-      </Modal>
-      <Divider />
     </div>
   );
 };
