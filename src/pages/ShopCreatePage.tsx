@@ -1,4 +1,4 @@
-import { Button, Card, Col, Form, Input, Modal, Row, Select, Space, Table, Typography, message } from 'antd';
+import { Button, Card, Col, Form, Input, InputNumber, Modal, Row, Select, Space, Table, Typography, message } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useEnterpriseStore } from '../store/enterpriseStore';
@@ -120,6 +120,22 @@ export const ShopCreatePage = () => {
                   { title: '设备分类', dataIndex: 'category' },
                   { title: '设备序列号', dataIndex: 'serialNo' },
                   { title: '状态', dataIndex: 'status' },
+                  {
+                    title: '数量',
+                    render: (_, record) => (
+                      <Form.Item name={['relatedDevices', record.name, 'quantity']} initialValue={1} rules={[{ required: true, message: '请输入数量' }]}>
+                        <InputNumber min={1} precision={0} controls={false} style={{ width: '100%' }} />
+                      </Form.Item>
+                    )
+                  },
+                  {
+                    title: '支付金额',
+                    render: (_, record) => (
+                      <Form.Item name={['relatedDevices', record.name, 'paymentAmount']} initialValue={0} rules={[{ required: true, message: '请输入支付金额' }]}>
+                        <InputNumber min={0} precision={2} controls={false} style={{ width: '100%' }} />
+                      </Form.Item>
+                    )
+                  },
                   { title: '操作', render: (_, record) => <Button type="link" danger onClick={() => remove(record.name)}>移除</Button> }
                 ]}
               />
@@ -167,7 +183,7 @@ export const ShopCreatePage = () => {
                         message.warning('该设备已选择');
                         return;
                       }
-                      form.setFieldValue('relatedDevices', [...current, device]);
+                      form.setFieldValue('relatedDevices', [...current, { ...device, quantity: 1, paymentAmount: 0 }]);
                       setDeviceOpen(false);
                     }}
                   >
