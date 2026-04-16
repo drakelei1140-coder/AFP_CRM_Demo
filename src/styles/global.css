@@ -48,7 +48,18 @@ a,
 }
 
 .detail-section-nav-item.active {
-  background: #1f2a37;
+  background: #f6efe3;
   border-color: #d79a3a;
-  color: #fff;
+  color: #1f2a37;
+}
+
+
+.sticky-bottom-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 9;
+  background: #fff;
+  border: 1px solid #e7d7be;
+  border-radius: 10px;
+  padding: 12px 16px;
 }
