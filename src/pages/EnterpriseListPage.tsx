@@ -51,7 +51,7 @@ export const EnterpriseListPage = () => {
       <Card bodyStyle={{ paddingBottom: 0 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
           <Typography.Title level={5} style={{ margin: 0 }}>企业列表</Typography.Title>
-          <Space><Button>导出</Button><Button>导入</Button></Space>
+          <Space><Button>导出</Button><Button>导入</Button><Button type="primary" onClick={() => navigate('/enterprises/new')}>新增</Button></Space>
         </div>
         <Table rowKey="id" scroll={{ x: 2100 }} dataSource={enterprises} pagination={{ pageSize: 8 }} columns={[
           { title: '企业名称', dataIndex: 'name', width: 340, render: (v) => <Tooltip title={v}><Typography.Paragraph ellipsis={{ rows: 3 }} style={{ marginBottom: 0 }}>{v}</Typography.Paragraph></Tooltip> },

@@ -2,10 +2,12 @@ import { ConfigProvider, theme } from 'antd';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { AppLayout } from './components/AppLayout';
 import { EnterpriseDetailPage } from './pages/EnterpriseDetailPage';
+import { EnterpriseCreatePage } from './pages/EnterpriseCreatePage';
 import { EnterpriseEditPage } from './pages/EnterpriseEditPage';
 import { EnterpriseListPage } from './pages/EnterpriseListPage';
 import { MerchantReviewDetailPage } from './pages/MerchantReviewDetailPage';
 import { MerchantReviewListPage } from './pages/MerchantReviewListPage';
+import { MerchantReviewEditPage } from './pages/MerchantReviewEditPage';
 import { PlaceholderPage } from './pages/PlaceholderPage';
 import { ShopDetailPage } from './pages/ShopDetailPage';
 import { ShopEditPage } from './pages/ShopEditPage';
@@ -60,11 +62,13 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/enterprises" replace />} />
           <Route path="/enterprises" element={<EnterpriseListPage />} />
+          <Route path="/enterprises/new" element={<EnterpriseCreatePage />} />
           <Route path="/shops" element={<ShopListPage />} />
           <Route path="/shops/:id" element={<ShopDetailPage />} />
           <Route path="/shops/:id/edit" element={<ShopEditPage />} />
           <Route path="/merchants" element={<MerchantReviewListPage />} />
           <Route path="/merchants/:id" element={<MerchantReviewDetailPage />} />
+          <Route path="/merchants/:id/edit" element={<MerchantReviewEditPage />} />
           <Route path="/enterprises/:id" element={<EnterpriseDetailPage />} />
           <Route path="/enterprises/:id/edit" element={<EnterpriseEditPage />} />
           <Route path="*" element={<PlaceholderPage />} />
