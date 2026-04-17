@@ -57,6 +57,14 @@ type OnboardingRecord = {
   history: HistoryAttempt[];
 };
 
+type FieldDef = {
+  group: string;
+  key: string;
+  systemField: string;
+  afpField: string;
+  required?: boolean;
+};
+
 const requiredApis = [
   'POST /legalEntities',
   'PATCH /legalEntities/{id}',
@@ -70,6 +78,122 @@ const requiredApis = [
   'webhook：balancePlatform.accountHolder.updated',
   'webhook：paymentMethod.created'
 ];
+
+const BASE_FIELDS: FieldDef[] = [
+  // Company LE
+  { group: 'Company Legal Entity', key: 'companyReference', systemField: '企业参考号 / 企业外部参考号', afpField: 'reference', required: true },
+  { group: 'Company Legal Entity', key: 'companyType', systemField: '企业类型', afpField: 'type', required: true },
+  { group: 'Company Legal Entity', key: 'companyLegalName', systemField: '企业法定名称', afpField: 'organization.legalName', required: true },
+  { group: 'Company Legal Entity', key: 'companyDba', systemField: '企业营业名称 / DBA', afpField: 'organization.doingBusinessAs' },
+  { group: 'Company Legal Entity', key: 'companyDescription', systemField: '企业描述', afpField: 'organization.description' },
+  { group: 'Company Legal Entity', key: 'companyPhoneNumber', systemField: '企业联系电话', afpField: 'organization.phone.number' },
+  { group: 'Company Legal Entity', key: 'companyPhoneCountryCode', systemField: '企业电话国家区号', afpField: 'organization.phone.phoneCountryCode' },
+  { group: 'Company Legal Entity', key: 'companyPhoneType', systemField: '企业电话类型', afpField: 'organization.phone.type' },
+  { group: 'Company Legal Entity', key: 'companyEmail', systemField: '企业邮箱', afpField: 'organization.email' },
+  { group: 'Company Legal Entity', key: 'registeredStreet', systemField: '注册地址-街道', afpField: 'organization.registeredAddress.street', required: true },
+  { group: 'Company Legal Entity', key: 'registeredStreet2', systemField: '注册地址-补充地址', afpField: 'organization.registeredAddress.street2' },
+  { group: 'Company Legal Entity', key: 'registeredCity', systemField: '注册地址-城市', afpField: 'organization.registeredAddress.city' },
+  { group: 'Company Legal Entity', key: 'registeredState', systemField: '注册地址-州 / 省', afpField: 'organization.registeredAddress.stateOrProvince' },
+  { group: 'Company Legal Entity', key: 'registeredPostalCode', systemField: '注册地址-邮编', afpField: 'organization.registeredAddress.postalCode' },
+  { group: 'Company Legal Entity', key: 'registeredCountry', systemField: '注册地址-国家', afpField: 'organization.registeredAddress.country', required: true },
+  { group: 'Company Legal Entity', key: 'principalStreet', systemField: '主要营业地址-街道', afpField: 'organization.principalPlaceOfBusiness.street' },
+  { group: 'Company Legal Entity', key: 'principalStreet2', systemField: '主要营业地址-补充地址', afpField: 'organization.principalPlaceOfBusiness.street2' },
+  { group: 'Company Legal Entity', key: 'principalCity', systemField: '主要营业地址-城市', afpField: 'organization.principalPlaceOfBusiness.city' },
+  { group: 'Company Legal Entity', key: 'principalState', systemField: '主要营业地址-州 / 省', afpField: 'organization.principalPlaceOfBusiness.stateOrProvince' },
+  { group: 'Company Legal Entity', key: 'principalPostalCode', systemField: '主要营业地址-邮编', afpField: 'organization.principalPlaceOfBusiness.postalCode' },
+  { group: 'Company Legal Entity', key: 'principalCountry', systemField: '主要营业地址-国家', afpField: 'organization.principalPlaceOfBusiness.country' },
+  { group: 'Company Legal Entity', key: 'incorporationDate', systemField: '成立日期', afpField: 'organization.dateOfIncorporation' },
+  { group: 'Company Legal Entity', key: 'registrationNumber', systemField: '企业注册号', afpField: 'organization.registrationNumber' },
+  { group: 'Company Legal Entity', key: 'governingLawCountry', systemField: '企业治理法律所在国', afpField: 'organization.countryOfGoverningLaw' },
+  { group: 'Company Legal Entity', key: 'taxCountry', systemField: '企业税务国家', afpField: 'organization.taxInformation.country' },
+  { group: 'Company Legal Entity', key: 'taxNumber', systemField: '企业税号', afpField: 'organization.taxInformation.number' },
+  { group: 'Company Legal Entity', key: 'taxType', systemField: '企业税号类型', afpField: 'organization.taxInformation.type' },
+  { group: 'Company Legal Entity', key: 'vatNumber', systemField: 'VAT号', afpField: 'organization.vatNumber' },
+  { group: 'Company Legal Entity', key: 'vatAbsenceReason', systemField: '无VAT原因', afpField: 'organization.vatAbsenceReason' },
+  { group: 'Company Legal Entity', key: 'stockMarketIdentifier', systemField: '上市市场标识', afpField: 'organization.stockData.marketIdentifier' },
+  { group: 'Company Legal Entity', key: 'stockNumber', systemField: '股票代码', afpField: 'organization.stockData.stockNumber' },
+  // Individual LE
+  { group: 'Individual Legal Entity', key: 'personRole', systemField: '人员角色', afpField: 'entityAssociations.type', required: true },
+  { group: 'Individual Legal Entity', key: 'personReference', systemField: '人员参考号 / 外部参考号', afpField: 'reference', required: true },
+  { group: 'Individual Legal Entity', key: 'personType', systemField: '人员类型', afpField: 'type', required: true },
+  { group: 'Individual Legal Entity', key: 'personFirstName', systemField: '名', afpField: 'individual.name.firstName', required: true },
+  { group: 'Individual Legal Entity', key: 'personInfix', systemField: '中间名 / 前缀', afpField: 'individual.name.infix' },
+  { group: 'Individual Legal Entity', key: 'personLastName', systemField: '姓', afpField: 'individual.name.lastName', required: true },
+  { group: 'Individual Legal Entity', key: 'personNationality', systemField: '国籍', afpField: 'individual.nationality' },
+  { group: 'Individual Legal Entity', key: 'personDob', systemField: '出生日期', afpField: 'individual.birthData.dateOfBirth' },
+  { group: 'Individual Legal Entity', key: 'personEmail', systemField: '邮箱', afpField: 'individual.email' },
+  { group: 'Individual Legal Entity', key: 'personPhone', systemField: '联系电话', afpField: 'individual.phone.number' },
+  { group: 'Individual Legal Entity', key: 'personPhoneType', systemField: '电话类型', afpField: 'individual.phone.type' },
+  { group: 'Individual Legal Entity', key: 'residentialStreet', systemField: '居住地址-街道', afpField: 'individual.residentialAddress.street', required: true },
+  { group: 'Individual Legal Entity', key: 'residentialStreet2', systemField: '居住地址-补充地址', afpField: 'individual.residentialAddress.street2' },
+  { group: 'Individual Legal Entity', key: 'residentialCity', systemField: '居住地址-城市', afpField: 'individual.residentialAddress.city' },
+  { group: 'Individual Legal Entity', key: 'residentialState', systemField: '居住地址-州 / 省', afpField: 'individual.residentialAddress.stateOrProvince' },
+  { group: 'Individual Legal Entity', key: 'residentialPostalCode', systemField: '居住地址-邮编', afpField: 'individual.residentialAddress.postalCode' },
+  { group: 'Individual Legal Entity', key: 'residentialCountry', systemField: '居住地址-国家', afpField: 'individual.residentialAddress.country', required: true },
+  { group: 'Individual Legal Entity', key: 'idType', systemField: '证件类型', afpField: 'individual.identificationData.type', required: true },
+  { group: 'Individual Legal Entity', key: 'idNumber', systemField: '证件号码', afpField: 'individual.identificationData.number' },
+  { group: 'Individual Legal Entity', key: 'idExpiryDate', systemField: '证件到期日', afpField: 'individual.identificationData.expiryDate' },
+  { group: 'Individual Legal Entity', key: 'idIssuerState', systemField: '签发州 / 省', afpField: 'individual.identificationData.issuerState' },
+  { group: 'Individual Legal Entity', key: 'personTaxCountry', systemField: '税务国家', afpField: 'individual.taxInformation.country' },
+  { group: 'Individual Legal Entity', key: 'personTaxNumber', systemField: '税号', afpField: 'individual.taxInformation.number' },
+  { group: 'Individual Legal Entity', key: 'personTaxType', systemField: '税号类型', afpField: 'individual.taxInformation.type' },
+  // LE association
+  { group: 'Company LE 与 Individual LE 关联关系', key: 'associateLegalEntityId', systemField: '关联的人员ID / 人员参考号', afpField: 'entityAssociations.legalEntityId', required: true },
+  { group: 'Company LE 与 Individual LE 关联关系', key: 'associateType', systemField: '关联关系类型', afpField: 'entityAssociations.type', required: true },
+  { group: 'Company LE 与 Individual LE 关联关系', key: 'ownershipPct', systemField: '持股比例（如平台有）', afpField: '扩展字段' },
+  { group: 'Company LE 与 Individual LE 关联关系', key: 'isUbo', systemField: '是否最终受益人', afpField: 'entityAssociations.type' },
+  // Account Holder
+  { group: 'Account Holder', key: 'balancePlatformId', systemField: 'Balance Platform ID', afpField: 'balancePlatform', required: true },
+  { group: 'Account Holder', key: 'accountHolderReference', systemField: 'Account Holder 参考号', afpField: 'reference', required: true },
+  { group: 'Account Holder', key: 'accountHolderLegalEntityId', systemField: '关联企业 LE ID', afpField: 'legalEntityId', required: true },
+  { group: 'Account Holder', key: 'capabilities', systemField: '所申请能力集合', afpField: 'capabilities', required: true },
+  // Balance Account
+  { group: 'Balance Account', key: 'balanceAccountHolderId', systemField: '关联 Account Holder ID', afpField: 'accountHolderId', required: true },
+  { group: 'Balance Account', key: 'balanceAccountReference', systemField: 'Balance Account 参考号', afpField: 'reference', required: true },
+  { group: 'Balance Account', key: 'defaultCurrencyCode', systemField: '默认币种 / 结算币种', afpField: 'defaultCurrencyCode' },
+  // Business line
+  { group: 'Business Line', key: 'businessLineReference', systemField: 'Business Line 参考号', afpField: 'reference', required: true },
+  { group: 'Business Line', key: 'businessLineLegalEntityId', systemField: '关联企业 LE ID', afpField: 'legalEntityId', required: true },
+  { group: 'Business Line', key: 'service', systemField: '服务类型', afpField: 'service', required: true },
+  { group: 'Business Line', key: 'salesChannels', systemField: '销售渠道', afpField: 'salesChannels', required: true },
+  { group: 'Business Line', key: 'industryCode', systemField: '行业代码 / MCC映射值', afpField: 'industryCode', required: true },
+  { group: 'Business Line', key: 'businessLineDescription', systemField: '业务线描述 / 名称', afpField: 'description' },
+  // Store
+  { group: 'Store', key: 'storeMerchantId', systemField: 'Merchant Account ID', afpField: 'merchantId（路径参数）', required: true },
+  { group: 'Store', key: 'storeReference', systemField: 'Store参考号 / 门店编码', afpField: 'reference', required: true },
+  { group: 'Store', key: 'storeDescription', systemField: 'Store描述 / 门店名称', afpField: 'description', required: true },
+  { group: 'Store', key: 'storePhone', systemField: '门店联系电话', afpField: 'phoneNumber', required: true },
+  { group: 'Store', key: 'shopperStatement', systemField: '账单抬头 / Shopper Statement', afpField: 'shopperStatement', required: true },
+  { group: 'Store', key: 'businessLineIds', systemField: '绑定 Business Line IDs', afpField: 'businessLineIds', required: true },
+  { group: 'Store', key: 'storeStreet', systemField: '门店地址-街道', afpField: 'address.street', required: true },
+  { group: 'Store', key: 'storeStreet2', systemField: '门店地址-补充地址', afpField: 'address.street2' },
+  { group: 'Store', key: 'storeCity', systemField: '门店地址-城市', afpField: 'address.city' },
+  { group: 'Store', key: 'storeState', systemField: '门店地址-州 / 省', afpField: 'address.stateOrProvince' },
+  { group: 'Store', key: 'storePostalCode', systemField: '门店地址-邮编', afpField: 'address.postalCode' },
+  { group: 'Store', key: 'storeCountry', systemField: '门店地址-国家', afpField: 'address.country', required: true },
+  // Payment method (no rates)
+  { group: 'Payment Method', key: 'paymentProduct', systemField: '支付产品', afpField: 'paymentMethod / type', required: true },
+  { group: 'Payment Method', key: 'pmMerchantId', systemField: 'Merchant Account ID', afpField: 'merchantId（路径参数）', required: true },
+  { group: 'Payment Method', key: 'pmStoreId', systemField: 'Store ID（如适用）', afpField: 'storeId' },
+  { group: 'Payment Method', key: 'pmScope', systemField: '支付方式适用范围', afpField: '扩展字段' }
+];
+
+const HISTORY_RESULT_FIELDS: FieldDef[] = [
+  { group: 'Account Holder', key: 'capVerification', systemField: 'capability-verificationStatus', afpField: 'capabilities.*.verificationStatus' },
+  { group: 'Account Holder', key: 'capAllowed', systemField: 'capability-allowed', afpField: 'capabilities.*.allowed' },
+  { group: 'Account Holder', key: 'capEnabled', systemField: 'capability-enabled', afpField: 'capabilities.*.enabled' },
+  { group: 'Balance Account', key: 'balanceAccountId', systemField: 'Balance Account ID', afpField: '返回字段' },
+  { group: 'Balance Account', key: 'balanceAccountStatus', systemField: 'Balance Account 状态', afpField: '返回字段' },
+  { group: 'Store', key: 'storeId', systemField: 'Store ID', afpField: '返回字段' },
+  { group: 'Store', key: 'storeStatus', systemField: 'Store状态', afpField: '返回字段' },
+  { group: 'Payment Method', key: 'pmEnabled', systemField: '是否开通', afpField: 'enabled / allowed' },
+  { group: 'Payment Method', key: 'paymentMethodId', systemField: '通道支付方式配置ID', afpField: 'paymentMethodId' },
+  { group: 'Payment Method', key: 'pmCreateResult', systemField: 'Payment Method 创建结果', afpField: '返回字段' },
+  { group: 'Payment Method', key: 'pmAvailable', systemField: 'Payment Method 可用状态', afpField: 'allowed / enabled' },
+  { group: 'Payment Method', key: 'pmReturnMessage', systemField: 'Payment Method 返回信息', afpField: '返回字段' }
+];
+
+const DEFAULT_RETRY_VALUES: Record<string, string> = Object.fromEntries(BASE_FIELDS.map((f) => [f.key, '']));
 
 const statusColorMap: Record<OnboardingStatus, string> = {
   待遞交: 'default',
@@ -115,10 +239,10 @@ const seedData: OnboardingRecord[] = [
         result: '成功',
         errorSummary: '-',
         snapshot: [
-          { group: '企业信息', systemField: '企业主显示名称', afpField: 'legalEntities.name', value: 'HK Food Group' },
-          { group: '商铺信息', systemField: '商铺主显示名称', afpField: 'stores.description', value: '旺角站前店' },
-          { group: '商户信息', systemField: '渠道编码', afpField: 'paymentMethodSettings.profileId', value: 'ADY_AFP_PROFILE' },
-          { group: 'Payment Method 相关', systemField: '结算币种', afpField: 'paymentMethodSettings.currency', value: 'HKD', changed: true, beforeValue: 'USD', afterValue: 'HKD' }
+          { group: 'Company Legal Entity', systemField: '企业法定名称', afpField: 'organization.legalName', value: 'HK Food Group Ltd' },
+          { group: 'Store', systemField: 'Store参考号 / 门店编码', afpField: 'reference', value: 'STORE-10001' },
+          { group: 'Payment Method', systemField: '支付产品', afpField: 'paymentMethod / type', value: 'Visa,Mastercard,UnionPay' },
+          { group: 'Payment Method', systemField: 'Payment Method 可用状态', afpField: 'allowed / enabled', value: 'enabled', changed: true, beforeValue: 'disabled', afterValue: 'enabled' }
         ],
         apiExecutions: requiredApis.map((api, idx) => ({ order: idx + 1, api, result: '成功', code: '200', message: 'ok', updatedAt: '2026-04-15 10:30:10' }))
       },
@@ -135,9 +259,8 @@ const seedData: OnboardingRecord[] = [
         result: '失败',
         errorSummary: 'paymentMethodSettings.currency invalid',
         snapshot: [
-          { group: '企业信息', systemField: '企业主显示名称', afpField: 'legalEntities.name', value: 'HK Food Group' },
-          { group: '商铺信息', systemField: '商铺主显示名称', afpField: 'stores.description', value: '旺角站前店' },
-          { group: 'Payment Method 相关', systemField: '结算币种', afpField: 'paymentMethodSettings.currency', value: 'USD' }
+          { group: 'Payment Method', systemField: '支付产品', afpField: 'paymentMethod / type', value: 'Visa,Mastercard,UnionPay' },
+          { group: 'Payment Method', systemField: 'Payment Method 返回信息', afpField: '返回字段', value: 'currency invalid' }
         ],
         apiExecutions: requiredApis.map((api, idx) => ({
           order: idx + 1,
@@ -176,12 +299,9 @@ const seedData: OnboardingRecord[] = [
         result: '失败',
         errorSummary: 'stores.address line1 required',
         snapshot: [
-          { group: '企业信息', systemField: '企业主显示名称', afpField: 'legalEntities.name', value: 'Cross Channel Retail' },
-          { group: '商铺信息', systemField: '商铺地址', afpField: 'stores.address.line1', value: '' },
-          { group: '商户信息', systemField: '上單來源', afpField: 'meta.source', value: 'DMO' },
-          { group: 'Account Holder / Balance Account 相关', systemField: '收款銀行賬戶名稱', afpField: 'accountHolders.legalEntityName', value: 'Cross Channel Retail Ltd' },
-          { group: 'Business Line / Store 相关', systemField: 'Store参考号', afpField: 'stores.reference', value: 'STORE-0901' },
-          { group: 'Payment Method 相关', systemField: '交易费率', afpField: 'paymentMethodSettings.pricing.rate', value: '2.5' }
+          { group: 'Store', systemField: '门店地址-街道', afpField: 'address.street', value: '' },
+          { group: 'Business Line', systemField: '行业代码 / MCC映射值', afpField: 'industryCode', value: '5812' },
+          { group: 'Payment Method', systemField: 'Payment Method 返回信息', afpField: '返回字段', value: 'line1 required' }
         ],
         apiExecutions: requiredApis.map((api, idx) => ({
           order: idx + 1,
@@ -193,158 +313,33 @@ const seedData: OnboardingRecord[] = [
         }))
       }
     ]
-  },
-  {
-    id: 'ob-3',
-    merchantName: 'AFP Processing Demo',
-    mid: 'MID-010',
-    channels: ['Adyen_AFP'],
-    channelMerchantNo: 'ADY-M-90220',
-    channelAvailable: '不可用',
-    progress: '处理中',
-    onboardingStatus: '處理中',
-    latestErrorSummary: '-',
-    returnMessages: [{ api: 'accountHolders', summary: 'processing' }],
-    updatedAt: '2026-04-16 11:10:00',
-    history: [
-      {
-        id: 'h-3-1',
-        attemptNo: 1,
-        submitTime: '2026-04-16 11:10:00',
-        operator: 'OPS-Mike',
-        modifyTime: '2026-04-16 11:05:00',
-        channel: 'Adyen_AFP',
-        source: '首次进件',
-        onboardingStatus: '處理中',
-        progress: '处理中',
-        result: '处理中',
-        errorSummary: '-',
-        snapshot: [
-          { group: '企业信息', systemField: '企业主显示名称', afpField: 'legalEntities.name', value: 'AFP Processing Demo' },
-          { group: '商铺信息', systemField: '商铺主显示名称', afpField: 'stores.description', value: 'Processing Store' },
-          { group: '其他补充字段', systemField: '通道商户号', afpField: 'merchants.id', value: 'ADY-M-90220' }
-        ],
-        apiExecutions: requiredApis.map((api, idx) => ({ order: idx + 1, api, result: idx < 4 ? '成功' : '处理中', code: idx < 4 ? '200' : '102', message: idx < 4 ? 'ok' : 'processing', updatedAt: '2026-04-16 11:10:30' }))
-      }
-    ]
-  },
-  {
-    id: 'ob-4',
-    merchantName: 'Mixed Channel Pending Risk',
-    mid: 'MID-011',
-    channels: ['Adyen_AFP', 'LegacyGateway'],
-    channelMerchantNo: 'ADY-M-90301',
-    channelAvailable: '不可用',
-    progress: '未开始',
-    onboardingStatus: '待风控审核',
-    latestErrorSummary: '等待风控审核后重新进件',
-    returnMessages: [{ api: 'risk-gate', summary: 'pending risk review' }],
-    updatedAt: '2026-04-16 09:20:00',
-    history: [
-      {
-        id: 'h-4-2',
-        attemptNo: 2,
-        submitTime: '2026-04-16 09:20:00',
-        operator: 'OPS-Anna',
-        modifyTime: '2026-04-16 09:18:00',
-        channel: 'Adyen_AFP,LegacyGateway',
-        source: 'OPS修改后重进件',
-        onboardingStatus: '待风控审核',
-        progress: '未开始',
-        result: '处理中',
-        errorSummary: '进入待风控审核队列',
-        snapshot: [
-          { group: '商铺信息', systemField: '商铺地址', afpField: 'stores.address.line1', value: '1 Queen\'s Rd', changed: true, beforeValue: '', afterValue: '1 Queen\'s Rd' },
-          { group: '商户信息', systemField: '上單來源', afpField: 'meta.source', value: 'CRM', changed: true, beforeValue: 'DMO', afterValue: 'CRM' }
-        ],
-        apiExecutions: requiredApis.map((api, idx) => ({ order: idx + 1, api, result: '处理中', code: '102', message: 'queued by risk gate', updatedAt: '2026-04-16 09:20:20' }))
-      },
-      {
-        id: 'h-4-1',
-        attemptNo: 1,
-        submitTime: '2026-04-15 18:00:00',
-        operator: 'OPS-Anna',
-        modifyTime: '2026-04-15 17:50:00',
-        channel: 'Adyen_AFP,LegacyGateway',
-        source: '首次进件',
-        onboardingStatus: '進件失敗',
-        progress: '失败',
-        result: '失败',
-        errorSummary: 'stores.address line1 required',
-        snapshot: [
-          { group: '商铺信息', systemField: '商铺地址', afpField: 'stores.address.line1', value: '' }
-        ],
-        apiExecutions: requiredApis.map((api, idx) => ({ order: idx + 1, api, result: api.includes('stores') ? '失败' : '成功', code: api.includes('stores') ? '422' : '200', message: api.includes('stores') ? 'line1 required' : 'ok', updatedAt: '2026-04-15 18:00:30' }))
-      }
-    ]
-  },
-  {
-    id: 'ob-5',
-    merchantName: 'Mixed Channel After Risk Pass',
-    mid: 'MID-012',
-    channels: ['Adyen_AFP', 'LegacyGateway'],
-    channelMerchantNo: 'ADY-M-90366',
-    channelAvailable: '不可用',
-    progress: '处理中',
-    onboardingStatus: '處理中',
-    latestErrorSummary: '-',
-    returnMessages: [{ api: 'risk-gate', summary: 'risk approved, resend started' }],
-    updatedAt: '2026-04-16 12:12:00',
-    history: [
-      {
-        id: 'h-5-3',
-        attemptNo: 3,
-        submitTime: '2026-04-16 12:10:00',
-        operator: 'Risk-Linda',
-        modifyTime: '2026-04-16 12:08:00',
-        channel: 'Adyen_AFP,LegacyGateway',
-        source: '风控通过后重进件',
-        onboardingStatus: '處理中',
-        progress: '处理中',
-        result: '处理中',
-        errorSummary: '-',
-        snapshot: [
-          { group: '商户信息', systemField: '风控结论', afpField: 'meta.riskDecision', value: 'pass' }
-        ],
-        apiExecutions: requiredApis.map((api, idx) => ({ order: idx + 1, api, result: idx < 6 ? '成功' : '处理中', code: idx < 6 ? '200' : '102', message: idx < 6 ? 'ok' : 'processing', updatedAt: '2026-04-16 12:10:20' }))
-      },
-      {
-        id: 'h-5-2',
-        attemptNo: 2,
-        submitTime: '2026-04-16 09:40:00',
-        operator: 'OPS-Tom',
-        modifyTime: '2026-04-16 09:35:00',
-        channel: 'Adyen_AFP,LegacyGateway',
-        source: 'OPS修改后重进件',
-        onboardingStatus: '待风控审核',
-        progress: '未开始',
-        result: '处理中',
-        errorSummary: '待风控审核',
-        snapshot: [
-          { group: '商铺信息', systemField: '商铺地址', afpField: 'stores.address.line1', value: '8 Harbour Rd', changed: true, beforeValue: '', afterValue: '8 Harbour Rd' }
-        ],
-        apiExecutions: requiredApis.map((api, idx) => ({ order: idx + 1, api, result: '处理中', code: '102', message: 'queued', updatedAt: '2026-04-16 09:40:30' }))
-      },
-      {
-        id: 'h-5-1',
-        attemptNo: 1,
-        submitTime: '2026-04-15 20:10:00',
-        operator: 'OPS-Tom',
-        modifyTime: '2026-04-15 20:05:00',
-        channel: 'Adyen_AFP,LegacyGateway',
-        source: '首次进件',
-        onboardingStatus: '進件失敗',
-        progress: '失败',
-        result: '失败',
-        errorSummary: 'stores.address line1 required',
-        snapshot: [{ group: '商铺信息', systemField: '商铺地址', afpField: 'stores.address.line1', value: '' }],
-        apiExecutions: requiredApis.map((api, idx) => ({ order: idx + 1, api, result: api.includes('stores') ? '失败' : '成功', code: api.includes('stores') ? '422' : '200', message: api.includes('stores') ? 'line1 required' : 'ok', updatedAt: '2026-04-15 20:10:50' }))
-      }
-    ]
   }
 ];
 
 const coreFilterFields = ['商户名称', '商户号（MID）', '通道', '进件单状态', '通道进件进度', '更新时间'];
+
+const groupOrder = [
+  'Company Legal Entity',
+  'Individual Legal Entity',
+  'Company LE 与 Individual LE 关联关系',
+  'Account Holder',
+  'Balance Account',
+  'Business Line',
+  'Store',
+  'Payment Method'
+];
+
+const groupFields = (defs: FieldDef[]) => {
+  const map = new Map<string, FieldDef[]>();
+  defs.forEach((def) => {
+    if (!map.has(def.group)) map.set(def.group, []);
+    map.get(def.group)?.push(def);
+  });
+  return groupOrder.map((group) => ({ group, fields: map.get(group) || [] })).filter((g) => g.fields.length > 0);
+};
+
+const RETRY_GROUPS = groupFields(BASE_FIELDS);
+const HISTORY_GROUPS = groupFields([...BASE_FIELDS, ...HISTORY_RESULT_FIELDS]);
 
 export const MerchantOnboardingListPage = () => {
   const [records, setRecords] = useState<OnboardingRecord[]>(seedData);
@@ -369,27 +364,22 @@ export const MerchantOnboardingListPage = () => {
   const visibleFilters = expandedFilter ? filterFields : filterFields.filter((f) => coreFilterFields.includes(f.label));
 
   const selectedHistory = useMemo(() => currentRecord?.history.find((h) => h.id === selectedHistoryId), [currentRecord, selectedHistoryId]);
-  const groupedSnapshot = useMemo(() => {
-    if (!selectedHistory) return [] as Array<{ group: string; fields: SnapshotField[] }>;
-    const map = new Map<string, SnapshotField[]>();
-    selectedHistory.snapshot.forEach((f) => {
-      if (!map.has(f.group)) map.set(f.group, []);
-      map.get(f.group)?.push(f);
-    });
-    return Array.from(map.entries()).map(([group, fields]) => ({ group, fields }));
-  }, [selectedHistory]);
 
   const openEditModal = (record: OnboardingRecord) => {
     const latest = record.history[0];
-    setCurrentRecord(record);
-    editForm.setFieldsValue({
-      商户名称: record.merchantName,
-      商户号: record.mid,
-      通道商户号: record.channelMerchantNo,
-      结算币种: latest.snapshot.find((x) => x.systemField.includes('结算币种'))?.value || 'HKD',
-      商铺地址: latest.snapshot.find((x) => x.systemField.includes('商铺地址'))?.value || '',
-      Store参考号: latest.snapshot.find((x) => x.systemField.includes('Store参考号'))?.value || ''
+    const snapshotMap = new Map(latest.snapshot.map((f) => [f.systemField, f.afterValue || f.value]));
+    const values: Record<string, string> = { ...DEFAULT_RETRY_VALUES };
+
+    BASE_FIELDS.forEach((field) => {
+      values[field.key] = snapshotMap.get(field.systemField) || values[field.key] || '';
     });
+
+    values.companyLegalName = values.companyLegalName || record.merchantName;
+    values.pmMerchantId = values.pmMerchantId || record.channelMerchantNo;
+    values.storeMerchantId = values.storeMerchantId || record.channelMerchantNo;
+
+    setCurrentRecord(record);
+    editForm.setFieldsValue(values);
     setEditOpen(true);
   };
 
@@ -404,37 +394,24 @@ export const MerchantOnboardingListPage = () => {
     const values = await editForm.validateFields();
     const hasNonAfp = currentRecord.channels.some((ch) => ch !== 'Adyen_AFP');
     const prev = currentRecord.history[0];
-    const now = '2026-04-16 15:30:00';
+    const now = '2026-04-17 09:30:00';
 
-    const changedFields: SnapshotField[] = [
-      {
-        group: '商户信息',
-        systemField: '通道商户号',
-        afpField: 'merchants.id',
-        value: values.通道商户号,
-        changed: values.通道商户号 !== currentRecord.channelMerchantNo,
-        beforeValue: currentRecord.channelMerchantNo,
-        afterValue: values.通道商户号
-      },
-      {
-        group: 'Payment Method 相关',
-        systemField: '结算币种',
-        afpField: 'paymentMethodSettings.currency',
-        value: values.结算币种,
-        changed: values.结算币种 !== (prev.snapshot.find((x) => x.systemField.includes('结算币种'))?.value || 'HKD'),
-        beforeValue: prev.snapshot.find((x) => x.systemField.includes('结算币种'))?.value || 'HKD',
-        afterValue: values.结算币种
-      },
-      {
-        group: 'Business Line / Store 相关',
-        systemField: '商铺地址',
-        afpField: 'stores.address.line1',
-        value: values.商铺地址,
-        changed: values.商铺地址 !== (prev.snapshot.find((x) => x.systemField.includes('商铺地址'))?.value || ''),
-        beforeValue: prev.snapshot.find((x) => x.systemField.includes('商铺地址'))?.value || '',
-        afterValue: values.商铺地址
-      }
-    ];
+    const previousMap = new Map(prev.snapshot.map((s) => [s.systemField, s.afterValue || s.value]));
+
+    const changedFields: SnapshotField[] = BASE_FIELDS.map((field) => {
+      const newValue = String(values[field.key] ?? '');
+      const beforeValue = previousMap.get(field.systemField) || '';
+      const changed = beforeValue !== newValue;
+      return {
+        group: field.group,
+        systemField: field.systemField,
+        afpField: field.afpField,
+        value: newValue,
+        changed,
+        beforeValue,
+        afterValue: newValue
+      };
+    });
 
     const nextStatus: OnboardingStatus = hasNonAfp ? '待风控审核' : '待重新進件';
     const nextProgress: ProgressStatus = hasNonAfp ? '未开始' : '处理中';
@@ -449,9 +426,12 @@ export const MerchantOnboardingListPage = () => {
       source: 'OPS修改后重进件',
       onboardingStatus: nextStatus,
       progress: nextProgress,
-      result: hasNonAfp ? '处理中' : '处理中',
+      result: '处理中',
       errorSummary: hasNonAfp ? '已进入待风控审核' : '已发起重新进件，处理中',
-      snapshot: changedFields,
+      snapshot: [...changedFields,
+        { group: 'Account Holder', systemField: 'capability-verificationStatus', afpField: 'capabilities.*.verificationStatus', value: hasNonAfp ? 'pending-risk' : 'pending-channel' },
+        { group: 'Payment Method', systemField: 'Payment Method 返回信息', afpField: '返回字段', value: hasNonAfp ? 'queued by risk gate' : 'processing' }
+      ],
       apiExecutions: requiredApis.map((api, idx) => ({
         order: idx + 1,
         api,
@@ -466,7 +446,7 @@ export const MerchantOnboardingListPage = () => {
       if (r.id !== currentRecord.id) return r;
       return {
         ...r,
-        channelMerchantNo: values.通道商户号,
+        channelMerchantNo: values.pmMerchantId || r.channelMerchantNo,
         onboardingStatus: nextStatus,
         progress: nextProgress,
         latestErrorSummary: newAttempt.errorSummary,
@@ -511,6 +491,12 @@ export const MerchantOnboardingListPage = () => {
     }
   ];
 
+  const snapshotMap = useMemo(() => {
+    const map = new Map<string, SnapshotField>();
+    (selectedHistory?.snapshot || []).forEach((s) => map.set(s.systemField, s));
+    return map;
+  }, [selectedHistory]);
+
   return (
     <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <Typography.Title level={3} style={{ margin: 0 }}>商户进件单列表页</Typography.Title>
@@ -537,17 +523,39 @@ export const MerchantOnboardingListPage = () => {
         <Table rowKey="id" scroll={{ x: 1680 }} dataSource={records} columns={columns} pagination={{ pageSize: 8 }} />
       </Card>
 
-      <Modal title="修改信息重新進件" open={editOpen} onCancel={() => setEditOpen(false)} onOk={submitReOnboarding} width={860}>
+      <Modal title="修改信息重新進件" open={editOpen} onCancel={() => setEditOpen(false)} onOk={submitReOnboarding} width={1220}>
         <Form form={editForm} layout="vertical">
-          <Row gutter={16}>
-            <Col span={8}><Form.Item label="商户名称" name="商户名称"><Input disabled /></Form.Item></Col>
-            <Col span={8}><Form.Item label="商户号（MID）" name="商户号"><Input disabled /></Form.Item></Col>
-            <Col span={8}><Form.Item label="通道商户号" name="通道商户号" rules={[{ required: true }]}><Input /></Form.Item></Col>
-            <Col span={8}><Form.Item label="结算币种" name="结算币种" rules={[{ required: true }]}><Select options={[{ value: 'HKD' }, { value: 'USD' }]} /></Form.Item></Col>
-            <Col span={8}><Form.Item label="商铺地址" name="商铺地址" rules={[{ required: true }]}><Input /></Form.Item></Col>
-            <Col span={8}><Form.Item label="Store参考号" name="Store参考号"><Input /></Form.Item></Col>
-          </Row>
-          <Typography.Text type="secondary">字段来源：该进件单上一次实际递交给通道的字段快照，仅影响本次进件记录，不回写主档。</Typography.Text>
+          <Collapse
+            defaultActiveKey={RETRY_GROUPS.map((g) => g.group)}
+            items={RETRY_GROUPS.map((group) => ({
+              key: group.group,
+              label: group.group,
+              children: (
+                <Table
+                  rowKey={(row) => row.key}
+                  pagination={false}
+                  dataSource={group.fields}
+                  columns={[
+                    { title: '本系统字段名', dataIndex: 'systemField', width: 260 },
+                    { title: 'AFP接口字段名', dataIndex: 'afpField', width: 360 },
+                    {
+                      title: '当前值',
+                      dataIndex: 'key',
+                      render: (_, row) => (
+                        <Form.Item
+                          name={row.key}
+                          style={{ marginBottom: 0 }}
+                          rules={row.required ? [{ required: true, message: '必填字段不能为空' }] : undefined}
+                        >
+                          <Input placeholder={row.required ? '必填' : '可选'} />
+                        </Form.Item>
+                      )
+                    }
+                  ]}
+                />
+              )
+            }))}
+          />
         </Form>
       </Modal>
 
@@ -556,7 +564,7 @@ export const MerchantOnboardingListPage = () => {
         open={historyOpen}
         onCancel={() => setHistoryOpen(false)}
         footer={<Button onClick={() => setHistoryOpen(false)}>关闭</Button>}
-        width={1280}
+        width={1320}
       >
         {currentRecord && (
           <Space direction="vertical" size={16} style={{ width: '100%' }}>
@@ -565,19 +573,12 @@ export const MerchantOnboardingListPage = () => {
                 items={currentRecord.history.map((h) => ({
                   color: h.result === '成功' ? 'green' : h.result === '失败' ? 'red' : 'blue',
                   children: (
-                    <Card
-                      size="small"
-                      onClick={() => setSelectedHistoryId(h.id)}
-                      style={{ cursor: 'pointer', borderColor: selectedHistoryId === h.id ? '#1F2A37' : undefined }}
-                    >
+                    <Card size="small" onClick={() => setSelectedHistoryId(h.id)} style={{ cursor: 'pointer', borderColor: selectedHistoryId === h.id ? '#1F2A37' : undefined }}>
                       <Space direction="vertical" size={4} style={{ width: '100%' }}>
                         <Typography.Text strong>第 {h.attemptNo} 次递交（{h.id}）</Typography.Text>
                         <Typography.Text>递交时间：{h.submitTime}｜修改时间：{h.modifyTime}｜操作人：{h.operator}｜通道：{h.channel}</Typography.Text>
                         <Typography.Text>修改来源：{h.source}｜状态：{h.onboardingStatus}｜进度：{h.progress}</Typography.Text>
-                        <Typography.Text>
-                          修改字段：
-                          {h.snapshot.filter((field) => field.changed).map((field) => field.systemField).join('、') || '无'}
-                        </Typography.Text>
+                        <Typography.Text>修改字段：{h.snapshot.filter((field) => field.changed).map((field) => field.systemField).join('、') || '无'}</Typography.Text>
                         <Typography.Text>当次结果：{h.result}｜错误摘要：{h.errorSummary || '-'}</Typography.Text>
                       </Space>
                     </Card>
@@ -589,26 +590,42 @@ export const MerchantOnboardingListPage = () => {
             <Card title="字段快照明细" size="small">
               {selectedHistory ? (
                 <Collapse
-                  defaultActiveKey={groupedSnapshot.map((g) => g.group)}
-                  items={groupedSnapshot.map((group) => ({
-                    key: group.group,
-                    label: group.group,
-                    children: (
-                      <Table
-                        rowKey={(row) => `${row.group}-${row.systemField}-${row.afpField}`}
-                        pagination={false}
-                        dataSource={group.fields}
-                        columns={[
-                          { title: '本系统字段名', dataIndex: 'systemField', width: 220 },
-                          { title: 'AFP接口字段名', dataIndex: 'afpField', width: 260 },
-                          { title: '值', dataIndex: 'value', width: 220 },
-                          { title: '变更标记', dataIndex: 'changed', width: 100, render: (v) => v ? <Tag color="gold">已修改</Tag> : <Tag>未修改</Tag> },
-                          { title: '修改前值', dataIndex: 'beforeValue', width: 180, render: (v) => v || '-' },
-                          { title: '修改后值', dataIndex: 'afterValue', width: 180, render: (v, row) => v || row.value }
-                        ]}
-                      />
-                    )
-                  }))}
+                  defaultActiveKey={HISTORY_GROUPS.map((g) => g.group)}
+                  items={HISTORY_GROUPS.map((group) => {
+                    const rows = group.fields.map((field) => {
+                      const snap = snapshotMap.get(field.systemField);
+                      const beforeValue = snap?.beforeValue ?? snap?.value ?? '-';
+                      const afterValue = snap?.afterValue ?? snap?.value ?? '-';
+                      return {
+                        key: field.key,
+                        systemField: field.systemField,
+                        afpField: field.afpField,
+                        beforeValue,
+                        afterValue
+                      };
+                    });
+
+                    const hasData = rows.some((row) => row.beforeValue !== '-' || row.afterValue !== '-');
+                    if (!hasData) return null;
+
+                    return {
+                      key: group.group,
+                      label: group.group,
+                      children: (
+                        <Table
+                          rowKey={(row) => row.key}
+                          pagination={false}
+                          dataSource={rows}
+                          columns={[
+                            { title: '本系统字段名', dataIndex: 'systemField', width: 260 },
+                            { title: 'AFP接口字段名', dataIndex: 'afpField', width: 360 },
+                            { title: '修改前值', dataIndex: 'beforeValue', width: 220 },
+                            { title: '修改后值', dataIndex: 'afterValue', width: 220 }
+                          ]}
+                        />
+                      )
+                    };
+                  }).filter(Boolean) as any}
                 />
               ) : (
                 <Typography.Text type="secondary">请选择一条历史记录查看字段快照。</Typography.Text>
