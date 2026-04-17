@@ -1,10 +1,12 @@
 import { InputNumber, Switch, Table } from 'antd';
 import { useMemo } from 'react';
 
+export const productRateTypes = ['境外-借记卡', '境外-贷记卡', '境内-借记卡', '境内-贷记卡'] as const;
+
 export interface ProductRateRow {
   key: string;
   product: 'Mastercard' | 'UnionPay' | 'Visa';
-  type: '消费' | '预授权' | '退款' | '拒付';
+  type: (typeof productRateTypes)[number];
   ratePct: number;
   fixedPct: number;
   fixedAmount: number;
@@ -12,17 +14,16 @@ export interface ProductRateRow {
 }
 
 export const buildRateRows = (): ProductRateRow[] => {
-  const types: ProductRateRow['type'][] = ['消费', '预授权', '退款', '拒付'];
   const products: ProductRateRow['product'][] = ['Mastercard', 'UnionPay', 'Visa'];
   return products.flatMap((product) =>
-    types.map((type, idx) => ({
+    productRateTypes.map((type, idx) => ({
       key: `${product}-${type}`,
       product,
       type,
       ratePct: Number((2.2 + idx * 0.1).toFixed(2)),
       fixedPct: Number((0.1 + idx * 0.02).toFixed(2)),
       fixedAmount: Number((0.5 + idx * 0.1).toFixed(2)),
-      enabled: type !== '拒付'
+      enabled: true
     }))
   );
 };
@@ -39,7 +40,7 @@ export const ProductRateTable = ({
   const columns = useMemo(
     () => [
       { title: '支付产品', dataIndex: 'product', width: 140 },
-      { title: '类型', dataIndex: 'type', width: 120 },
+      { title: '类型', dataIndex: 'type', width: 140 },
       {
         title: '交易费率（百分比）',
         dataIndex: 'ratePct',
