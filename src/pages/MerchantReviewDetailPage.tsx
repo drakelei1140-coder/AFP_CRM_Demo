@@ -1,9 +1,10 @@
-import { Alert, Button, Card, Descriptions, Drawer, Form, Select, Space, Table, Tag, Timeline, Typography, message } from 'antd';
+import { Alert, Button, Card, Descriptions, Drawer, Space, Tag, Timeline } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ProductRateTable, buildRateRows, type ProductRateRow } from '../components/ProductRateTable';
+import type { MerchantSignedStatus } from './MerchantStatusListPage';
 
-type MerchantStatus = '待审核' | '基础资料审核' | '风控核查' | '风控审核完成';
+type MerchantStatus = '待审核' | '基础资料审核' | '风控核查' | '风控审核完成' | MerchantSignedStatus;
 type EntityStatus = '待审核' | '待风控审核' | '审核通过' | '审核不通过';
 
 interface DetailRecord {
@@ -34,12 +35,52 @@ const navItems = [
 
 export const MerchantReviewDetailPage = () => {
   const { id = '' } = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
   const [data, setData] = useState<DetailRecord>(seed);
   const [rates] = useState<ProductRateRow[]>(buildRateRows());
   const [active, setActive] = useState('overview');
   const [enterpriseDrawer, setEnterpriseDrawer] = useState(false);
   const [shopDrawer, setShopDrawer] = useState(false);
+
+  useEffect(() => {
+    const stateStatus = (location.state as { merchantStatus?: MerchantStatus } | null)?.merchantStatus;
+    if (stateStatus && ['已签约', '取消签约', '拒绝签约'].includes(stateStatus)) {
+      setData((prev) => ({
+        ...prev,
+        id,
+        merchantStatus: stateStatus,
+        overview: {
+          ...prev.overview,
+          MID: prev.overview.MID.replace('MID-002', (id || 'm-s-1').toUpperCase()),
+          商户审核状态: stateStatus,
+          当前审核人: stateStatus === '已签约' ? 'System' : 'OPS-Ryan'
+        },
+        enterprise: {
+          ...prev.enterprise,
+          status: '审核通过',
+          summary: {
+            ...prev.enterprise.summary,
+            企业启用状态: stateStatus === '取消签约' || stateStatus === '拒绝签约' ? '停用' : '启用',
+            企业审核状态: '审核通过'
+          }
+        },
+        shop: {
+          ...prev.shop,
+          status: '审核通过',
+          summary: {
+            ...prev.shop.summary,
+            商铺启用状态: stateStatus === '取消签约' || stateStatus === '拒绝签约' ? '停用' : '启用',
+            商铺审核状态: '审核通过'
+          }
+        }
+      }));
+      return;
+    }
+    if (id) {
+      setData((prev) => ({ ...prev, id }));
+    }
+  }, [id, location.state]);
 
   const blocked = data.enterprise.status !== '审核通过' || data.shop.status !== '审核通过';
 
@@ -53,10 +94,15 @@ export const MerchantReviewDetailPage = () => {
     return () => observer.disconnect();
   }, [data.id]);
 
-  const topActions = useMemo(() => [
-    <Button key="edit" onClick={() => navigate(`/merchants/${id}/edit`)}>编辑</Button>,
-    <Button key="submit" type="primary" disabled={blocked} onClick={() => setData((p) => ({ ...p, merchantStatus: '风控审核完成' }))}>审核通过</Button>
-  ], [blocked, id, navigate]);
+  const topActions = useMemo(() => {
+    if (data.merchantStatus === '取消签约' || data.merchantStatus === '拒绝签约') {
+      return [<Button key="edit" onClick={() => navigate(`/merchants/${id}/edit`)}>编辑</Button>];
+    }
+    return [
+      <Button key="edit" onClick={() => navigate(`/merchants/${id}/edit`)}>编辑</Button>,
+      <Button key="submit" type="primary" disabled={blocked} onClick={() => setData((p) => ({ ...p, merchantStatus: '风控审核完成' }))}>审核通过</Button>
+    ];
+  }, [blocked, data.merchantStatus, id, navigate]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16, width: '100%' }}>

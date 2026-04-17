@@ -11,6 +11,9 @@ import { MerchantReviewListPage } from './pages/MerchantReviewListPage';
 import { MerchantReviewEditPage } from './pages/MerchantReviewEditPage';
 import { MerchantOnboardingListPage } from './pages/MerchantOnboardingListPage';
 import { PlaceholderPage } from './pages/PlaceholderPage';
+import { SignedMerchantListPage } from './pages/SignedMerchantListPage';
+import { CancelledMerchantListPage } from './pages/CancelledMerchantListPage';
+import { RejectedMerchantListPage } from './pages/RejectedMerchantListPage';
 import { ShopCreatePage } from './pages/ShopCreatePage';
 import { ShopDetailPage } from './pages/ShopDetailPage';
 import { ShopEditPage } from './pages/ShopEditPage';
@@ -71,6 +74,9 @@ export default function App() {
           <Route path="/shops/:id" element={<ShopDetailPage />} />
           <Route path="/shops/:id/edit" element={<ShopEditPage />} />
           <Route path="/merchants" element={<MerchantReviewListPage />} />
+          <Route path="/signed" element={<SignedMerchantListPage />} />
+          <Route path="/cancelled" element={<CancelledMerchantListPage />} />
+          <Route path="/rejected" element={<RejectedMerchantListPage />} />
           <Route path="/merchants/new" element={<MerchantCreatePage />} />
           <Route path="/merchants/:id" element={<MerchantReviewDetailPage />} />
           <Route path="/merchants/:id/edit" element={<MerchantReviewEditPage />} />
