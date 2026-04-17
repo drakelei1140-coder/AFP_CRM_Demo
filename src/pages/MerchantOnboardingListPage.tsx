@@ -572,8 +572,12 @@ export const MerchantOnboardingListPage = () => {
                     >
                       <Space direction="vertical" size={4} style={{ width: '100%' }}>
                         <Typography.Text strong>第 {h.attemptNo} 次递交（{h.id}）</Typography.Text>
-                        <Typography.Text>递交时间：{h.submitTime}｜操作人：{h.operator}｜通道：{h.channel}</Typography.Text>
+                        <Typography.Text>递交时间：{h.submitTime}｜修改时间：{h.modifyTime}｜操作人：{h.operator}｜通道：{h.channel}</Typography.Text>
                         <Typography.Text>修改来源：{h.source}｜状态：{h.onboardingStatus}｜进度：{h.progress}</Typography.Text>
+                        <Typography.Text>
+                          修改字段：
+                          {h.snapshot.filter((field) => field.changed).map((field) => field.systemField).join('、') || '无'}
+                        </Typography.Text>
                         <Typography.Text>当次结果：{h.result}｜错误摘要：{h.errorSummary || '-'}</Typography.Text>
                       </Space>
                     </Card>
