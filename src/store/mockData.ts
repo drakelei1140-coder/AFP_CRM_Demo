@@ -163,6 +163,7 @@ export const enterpriseMockData: Enterprise[] = [
   makeEnterprise(1, { name: 'HK Food Group', reviewStatus: '待审核', enableStatus: null, channels: ['Adyen-AFP', 'Adyen-payfac'] }),
   makeEnterprise(2, { name: 'AFP Pure Retail', reviewStatus: '待审核', enableStatus: null, channels: ['Adyen-AFP'] }),
   makeEnterprise(3, { name: 'Risk Queue Co', reviewStatus: '待风控审核', enableStatus: null, channels: ['Adyen-payfac'] }),
+  makeEnterprise(9, { name: 'Third Party Pending Co', reviewStatus: '待第三方审核', enableStatus: null, channels: ['Adyen-AFP', 'Other'] }),
   makeEnterprise(4, { name: 'Approved Active Co', reviewStatus: '审核通过', enableStatus: '启用', channels: ['Adyen-AFP'], companyMode: '连锁' }),
   makeEnterprise(5, { name: 'Approved Disabled Co', reviewStatus: '审核通过', enableStatus: '停用', channels: ['Adyen-AFP', 'Adyen-payfac'] }),
   makeEnterprise(6, { name: 'Rejected Corp', reviewStatus: '审核不通过', enableStatus: null, channels: ['Adyen-payfac'] }),

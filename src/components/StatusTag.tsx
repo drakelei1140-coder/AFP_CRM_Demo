@@ -2,7 +2,7 @@ import { Tag } from 'antd';
 import { EnableStatus, ReviewStatus } from '../store/types';
 
 export const ReviewTag = ({ status }: { status: ReviewStatus }) => {
-  if (status === '待风控审核') {
+  if (status === '待风控审核' || status === '待第三方审核') {
     return (
       <Tag style={{ background: '#e4e4e4', borderColor: '#cfcfcf', color: '#1f2937' }}>
         {status}

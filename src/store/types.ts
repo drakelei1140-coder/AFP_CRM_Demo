@@ -1,4 +1,4 @@
-export type ReviewStatus = '待审核' | '待风控审核' | '审核通过' | '审核不通过';
+export type ReviewStatus = '待审核' | '待风控审核' | '待第三方审核' | '审核通过' | '审核不通过';
 export type EnableStatus = '启用' | '停用' | null;
 
 export interface TimelineItem {
