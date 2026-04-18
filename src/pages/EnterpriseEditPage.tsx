@@ -56,7 +56,6 @@ const read = (obj: Record<string, unknown> | undefined, key: string, fallback = 
 };
 
 const boolToSwitch = (value: string) => ['true', '是', 'yes', '1', 'y'].includes((value || '').toLowerCase());
-const switchToBool = (value: boolean) => (value ? '是' : '否');
 
 const enumOptions = {
   yesNo: ['是', '否'],
@@ -311,7 +310,7 @@ const getInitialValues = (ent: ReturnType<ReturnType<typeof useEnterpriseStore>[
     ...ent?.sections.risk
   };
 
-  return {
+  const initialValues: Record<string, unknown> = {
     ...source,
     企业名称: ent?.name || '-',
     企业编号: ent?.cid || '-',
@@ -329,11 +328,40 @@ const getInitialValues = (ent: ReturnType<ReturnType<typeof useEnterpriseStore>[
     企业描述: read(source, '企业描述', read(source, '企業描述')),
     创建时间临时: ent?.createdAt || '-'
   };
-};
 
-const copyText = (text: string) => {
-  navigator.clipboard.writeText(text || '-');
-  message.success('已复制');
+  const booleanFields = [
+    '是否子公司',
+    '小微商戶',
+    'SME 設定',
+    'T1特選商戶',
+    '是否對公',
+    '小費功能',
+    '是否首次申請卡機商戶（包括KPay及其他卡機）',
+    '是否NGO',
+    '接收營銷資訊',
+    '是否高額商戶'
+  ];
+
+  const dateFields = ['成立日期', '周年申報表有效期(非必須)'];
+
+  booleanFields.forEach((field) => {
+    initialValues[field] = boolToSwitch(String(initialValues[field] ?? ''));
+  });
+
+  dateFields.forEach((field) => {
+    const value = String(initialValues[field] ?? '');
+    initialValues[field] = value && value !== '-' ? dayjs(value) : null;
+  });
+
+  const brandsValue = initialValues['申請過的卡機品牌（多選）'];
+  if (typeof brandsValue === 'string') {
+    initialValues['申請過的卡機品牌（多選）'] = brandsValue
+      .split(/[;,，、]/u)
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  return initialValues;
 };
 
 const FileInput = ({ value, onChange }: { value?: string; onChange?: (next: string) => void }) => (
@@ -450,6 +478,18 @@ export const EnterpriseEditPage = () => {
       layout="vertical"
       initialValues={initialValues}
       onFinish={(values) => {
+        const boolFields = [
+          '是否子公司',
+          '小微商戶',
+          'SME 設定',
+          'T1特選商戶',
+          '是否對公',
+          '小費功能',
+          '是否首次申請卡機商戶（包括KPay及其他卡機）',
+          '是否NGO',
+          '接收營銷資訊',
+          '是否高額商戶'
+        ];
         const payload = {
           ...values,
           创建时间临时: undefined,
@@ -458,6 +498,11 @@ export const EnterpriseEditPage = () => {
             ? dayjs(values['周年申報表有效期(非必須)']).format('YYYY-MM-DD')
             : '-'
         };
+        boolFields.forEach((field) => {
+          if (typeof payload[field] === 'boolean') {
+            payload[field] = payload[field] ? '是' : '否';
+          }
+        });
         store.submitEditDraft(enterprise.id, payload);
         message.success('已提交修改，进入企业资料修改待审核流程（demo模拟）');
         navigate(`/enterprises/${enterprise.id}`);
