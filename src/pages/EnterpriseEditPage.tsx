@@ -20,7 +20,7 @@ import {
 import type { FormInstance } from 'antd';
 import { CopyOutlined, EyeOutlined, UploadOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEnterpriseStore } from '../store/enterpriseStore';
 
@@ -445,6 +445,7 @@ export const EnterpriseEditPage = () => {
   const [activeSection, setActiveSection] = useState('overview');
 
   useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.IntersectionObserver === 'undefined') return undefined;
     const targets = navItems.map(([key]) => document.getElementById(key)).filter(Boolean) as HTMLElement[];
     const observer = new IntersectionObserver(
       (entries) => {
@@ -460,17 +461,19 @@ export const EnterpriseEditPage = () => {
     return () => observer.disconnect();
   }, [enterprise?.id]);
 
+  const allValues = Form.useWatch([], form);
+
   if (!enterprise) return <Card>未找到企业</Card>;
 
   const initialValues = getInitialValues(enterprise);
 
   const submitDisabled =
-    !Form.useWatch('企业名称', form) ||
-    !Form.useWatch('默认主联系人人员ID', form) ||
-    !Form.useWatch('上級公司ID', form) ||
-    !Form.useWatch('商戶中文名稱', form) ||
-    !Form.useWatch('商戶英文名稱', form) ||
-    !Form.useWatch('進件通道(必須)', form);
+    !allValues?.企业名称 ||
+    !allValues?.默认主联系人人员ID ||
+    !allValues?.上級公司ID ||
+    !allValues?.商戶中文名稱 ||
+    !allValues?.商戶英文名稱 ||
+    !allValues?.['進件通道(必須)'];
 
   return (
     <Form
@@ -621,7 +624,7 @@ export const EnterpriseEditPage = () => {
           <Table
             rowKey="field"
             pagination={false}
-            dataSource={fileFields.map((field) => ({ field, value: String(form.getFieldValue(field) || initialValues[field] || '-') }))}
+            dataSource={fileFields.map((field) => ({ field, value: String(initialValues[field] || '-') }))}
             columns={[
               { title: '字段名', dataIndex: 'field', width: '34%' },
               {
