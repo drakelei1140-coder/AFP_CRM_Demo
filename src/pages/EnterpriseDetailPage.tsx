@@ -254,8 +254,8 @@ export const EnterpriseDetailPage = () => {
         </Space>
       </Card>
 
-      <Card title="顶部悬浮导航标签区" style={{ marginBottom: 16 }}>
-        <div className="detail-section-nav-wrap" style={{ top: 12, padding: 0 }}>
+      <Card title="顶部悬浮导航标签区" style={{ marginBottom: 16, position: 'sticky', top: 0, zIndex: 40 }}>
+        <div className="detail-section-nav-wrap" style={{ top: 0, padding: 0 }}>
           <div className="detail-section-nav">
             {sectionNav.map(([key, title]) => (
               <button
