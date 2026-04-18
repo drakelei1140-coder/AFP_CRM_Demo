@@ -37,6 +37,12 @@ a,
   box-shadow: 0 2px 8px rgba(31, 42, 55, 0.08);
 }
 
+.detail-section-nav-sticky-strong {
+  top: 88px;
+  z-index: 24;
+  padding: 6px 0 12px;
+}
+
 .detail-section-nav-item {
   border: 1px solid #e2e6ec;
   background: #f8fafc;
